@@ -1,0 +1,18 @@
+extends layouts/login-layout.pug
+
+block content
+    img.logo(src='/images/login/logo.svg')
+    .loginContainer
+        h1 Log in to Twitter
+        - if (errorMessage)
+            .alert.alert-danger.errorMessage(role='alert')= `Error: ${errorMessage}` 
+        form(method="post")
+            //- input(type="text", name="logUsername", placeholder="Username or email", value=logUsername required="")
+            //- input(type="password", name="logPassword", placeholder="Password", required="")
+
+            input(type="text", name="logUsername", placeholder="Phone, email, or username", value="" required="")
+            input(type="password", name="logPassword", placeholder="Password", value="" required="")
+            input(type="submit", value="Login")
+        p
+            a(href="/register") Forgot Password? -  
+            a(href="/register") Register here.
