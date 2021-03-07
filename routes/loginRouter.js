@@ -9,7 +9,7 @@ const loginRouter = express.Router();
 
 loginRouter.get('/', (req, res, next) => {
   const payload = {
-    pageTitle: 'Login on Nottwitter / Nottwitter',
+    pageTitle: 'Login on Nottwitter',
     errorMessage: null,
   };
   res.status(200).render('login', payload);
@@ -17,7 +17,6 @@ loginRouter.get('/', (req, res, next) => {
 loginRouter.post('/', async (req, res, next) => {
   const payload = {};
   const { logUsername, logPassword } = req.body;
-  console.log(req.body);
   if (logUsername && logPassword) {
     try {
       const user = await User.findOne({
@@ -26,10 +25,12 @@ loginRouter.post('/', async (req, res, next) => {
       if (user != null) {
         const result = await user.correctPassword(logPassword, user.password);
 
-        if (result === true) {
-          // req.session.user = user;
-          console.log('yes');
+        if (result) {
+          req.session.user = user;
           return res.redirect('/');
+        } else {
+          payload.errorMessage = 'Login credentials incorrect.';
+          return res.status(200).render('login', payload);
         }
       }
     } catch (error) {
@@ -37,12 +38,9 @@ loginRouter.post('/', async (req, res, next) => {
       payload.errorMessage = 'Something went wrong.';
       res.status(200).render('login', payload);
     }
-  } else {
-    payload.errorMessage = 'Login credentials incorrect.';
-    return res.status(200).render('login', payload);
   }
 
   payload.errorMessage = 'Make sure each field has a valid value.';
-  res.status(200).render('login');
+  res.status(200).render('login', payload);
 });
 module.exports = loginRouter;

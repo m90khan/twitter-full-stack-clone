@@ -15,6 +15,7 @@ console.log(process.env.NODE_ENV);
 
 app.set('view engine', 'pug');
 app.set('views', 'views');
+app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -29,12 +30,19 @@ app.use(
 // Routes
 app.use('/login', require('./routes/loginRouter'));
 app.use('/register', require('./routes/registerRouter'));
+app.use('/logout', require('./routes/logoutRouter'));
+
+//API
+app.use('/api/posts', require('./routes/api/posts'));
+
 app.get('/', middleware.requireLogin, (req, res, next) => {
   const payload = {
     pageTitle: 'Home',
+    userLoggedIn: req.session.user,
+    userLoggedInJs: JSON.stringify(req.session.user),
+    url: req.originalUrl,
   };
-
-  res.render(200).render('home', payload);
+  res.status(200).render('home', payload);
 });
 
 module.exports = app;

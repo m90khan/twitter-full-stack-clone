@@ -1,24 +1,29 @@
 :root {
   --blue: #1fa2f1;
   --blueLight: #9bd1f9;
+  --blueDark: #0364a5;
   --blueBackground: rgba(212, 237, 255, 0.6);
-  --buttonHoverBg: #d4edff;
+  --buttonHoverBg: #17202a;
   --lightGrey: rgb(230, 236, 240);
   --spacing: 15px;
-  --greyText: rgb(101, 119, 134);
+  --greyText: #424446;
   --greyButtonText: rgba(0, 0, 0, 0.34);
   --red: rgb(226, 34, 94);
-  --redBackground: rgba(226, 34, 94, 0.1);
+  --redBackground: rgba(226, 34, 94, 0.3);
   --green: rgb(23, 191, 99);
-  --greenBackground: rgba(23, 191, 99, 0.1);
+  --greenBackground: rgba(23, 191, 99, 0.3);
   --white: #fff;
 }
-
+html {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
 html,
 body {
   height: 100%;
   min-height: 100%;
-  background-color: #fff;
+  background-color: #000;
   font-weight: 300;
 }
 
@@ -29,9 +34,25 @@ ul {
 * {
   outline: none !important;
 }
-
+::-webkit-input-placeholder {
+  /* Chrome/Opera/Safari */
+  color: var(--blueBackground);
+}
+::-moz-placeholder {
+  /* Firefox 19+ */
+  color: var(--blueBackground);
+}
+:-ms-input-placeholder {
+  /* IE 10+ */
+  color: var(--blueBackground);
+}
+:-moz-placeholder {
+  /* Firefox 18- */
+  color: var(--blueBackground);
+}
 a {
   color: inherit;
+  text-decoration: none;
 }
 
 a:hover {
@@ -40,30 +61,61 @@ a:hover {
 }
 
 h1 {
-  font-size: 19px;
+  font-size: 1.2rem;
   font-weight: 800;
   margin: 0;
 }
-
+.logo-home {
+  width: 2rem;
+  height: 2rem;
+}
 nav {
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: flex-start;
   height: 100%;
 }
-
+.tweet-btn {
+  padding: 1rem 2rem;
+  background-color: var(--blue);
+  border-radius: 50rem;
+  width: 100%;
+  margin-top: 1rem;
+}
+@media (min-width: 687px) {
+  .send-icon {
+    display: none;
+  }
+}
+.tweet-btn:hover {
+  background-color: #047ecf;
+  color: #fff;
+}
 nav a {
-  padding: 10px;
-  font-size: 30px;
-  width: 55px;
+  padding: 0rem 2rem 0 1rem;
+  font-size: 1.8rem;
+  /* width: 55px; */
   height: 55px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #212529;
+  color: #fff;
   position: relative;
 }
-
+nav a h1 {
+  margin-left: 1rem;
+  font-weight: 700;
+}
+@media (max-width: 700px) {
+  nav a h1 {
+    display: none;
+  }
+  .tweet-btn {
+    padding: 0.5rem;
+    background-color: var(--blue);
+    border-radius: 50%;
+  }
+}
 nav a.blue {
   color: var(--blue);
 }
@@ -71,7 +123,10 @@ nav a.blue {
 nav a:hover {
   background-color: var(--buttonHoverBg);
   color: var(--blue);
-  border-radius: 50%;
+  border-radius: 50rem;
+}
+nav .active-item {
+  color: var(--blue);
 }
 
 .wrapper {
@@ -97,20 +152,21 @@ button span {
 }
 
 .mainSectionContainer {
-  padding: 0;
-  border-left: 1px solid var(--lightGrey);
-  border-right: 1px solid var(--lightGrey);
+  /* margin: 0 1rem; */
+  border-left: 1px solid var(--greyText);
+  border-right: 1px solid var(--greyText);
   display: flex;
   flex-direction: column;
 }
 
 .titleContainer {
-  height: 53px;
+  height: 3.5rem;
   padding: 0 var(--spacing);
   display: flex;
   align-items: center;
-  border-bottom: 1px solid var(--lightGrey);
+  border-bottom: 1px solid var(--greyText);
   flex-shrink: 0;
+  color: var(--white);
 }
 
 .titleContainer h1 {
@@ -120,7 +176,7 @@ button span {
 .postFormContainer {
   display: flex;
   padding: var(--spacing);
-  border-bottom: 10px solid rgb(230, 236, 240);
+  border-bottom: 0.6rem solid var(--greyText);
   flex-shrink: 0;
 }
 
@@ -148,11 +204,16 @@ button span {
 .textareaContainer {
   flex: 1;
   padding-left: var(--spacing);
+  text-align: right;
 }
 
 .textareaContainer textarea {
+  background: var(--greyText);
+  color: var(--white);
   width: 100%;
   border: none;
+  padding: 0.5rem 0.5rem;
+  border-radius: 0.5rem;
   resize: none;
   font-size: 19px;
 }
@@ -161,20 +222,24 @@ button span {
   background-color: var(--blue);
   color: white;
   border: none;
-  border-radius: 40px;
-  padding: 7px 15px;
+  border-radius: 5rem;
+  padding: 0.5rem 1.5rem;
+  font-size: 1.2rem;
+  margin-top: 0.2rem;
 }
 
 #submitPostButton:disabled {
-  background-color: var(--blueLight);
+  background-color: var(--blueDark);
+  color: rgb(182, 182, 182);
 }
 
+/* POST */
 .post {
   display: flex;
   flex-direction: column;
   padding: var(--spacing);
   cursor: pointer;
-  border-bottom: 1px solid var(--lightGrey);
+  border-bottom: 1px solid var(--greyText);
   flex-shrink: 0;
 }
 
@@ -189,11 +254,13 @@ button span {
   display: flex;
   flex-direction: column;
   flex: 1;
+  color: var(--white);
 }
 
 .username,
 .date {
   color: var(--greyText);
+  font-weight: 500;
 }
 
 .displayName {
@@ -208,10 +275,12 @@ button span {
 .postFooter .postButtonContainer {
   flex: 1;
   display: flex;
+  padding: 0.5rem 0 0 0;
 }
 
 .postFooter .postButtonContainer button {
-  padding: 2px 5px;
+  color: var(--greyText);
+  padding: 0.3rem 0.5rem;
 }
 
 .header a:hover {
@@ -224,23 +293,30 @@ button span {
 }
 
 .postButtonContainer button:hover {
-  background-color: #d4edff;
+  background-color: var(--buttonHoverBg);
   color: var(--blue);
-  border-radius: 50%;
+  border-radius: 50rem;
 }
+.postButtonContainer button span,
+i {
+  pointer-events: none;
+}
+/* .postButtonContainer button span {
+  color: var(--greyText);
+} */
 
-.postButtonContainer.red button.active {
+/* .postButtonContainer.red button.active {
   color: var(--red);
-}
+} */
 
 .postButtonContainer.red button:hover {
   color: var(--red);
   background-color: var(--redBackground);
 }
 
-.postButtonContainer.green button.active {
+/* .postButtonContainer.green button.active {
   color: var(--green);
-}
+} */
 
 .postButtonContainer.green button:hover {
   color: var(--green);
@@ -248,12 +324,16 @@ button span {
 }
 
 .postActionContainer {
-  padding-left: 35px;
-  font-size: 13px;
+  padding-left: 2rem;
+  font-size: 0.8rem;
   color: var(--greyText);
-  margin-bottom: 5px;
+  margin-bottom: 0.6rem;
+  font-weight: 500;
 }
-
+.postActionContainer span:hover {
+  text-decoration: underline;
+  color: var(--green);
+}
 .replyFlag {
   margin-bottom: 5px;
 }
@@ -264,9 +344,12 @@ button span {
 
 .post.largeFont .postBody,
 .post.largeFont .postFooter {
-  font-size: 23px;
+  font-size: 1.8rem;
 }
 
+.postBody span {
+  font-weight: 400;
+}
 .postContentContainer .header {
   display: flex;
 }

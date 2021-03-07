@@ -4,7 +4,7 @@ const registerRouter = express.Router();
 const User = require('./../models/UserSchema');
 registerRouter.get('/', (req, res, next) => {
   const payload = {
-    pageTitle: 'Create Account / Nottwitter',
+    pageTitle: 'Create Account',
   };
   res.status(200).render('register', payload);
 });
@@ -46,7 +46,7 @@ registerRouter.post('/', async (req, res, next) => {
   const password = req.body.password;
 
   const payload = {
-    pageTitle: 'Create Account / Nottwitter',
+    pageTitle: 'Create Account',
     body: req.body,
   };
   if (firstName && lastName && username && email && password) {
@@ -66,7 +66,7 @@ registerRouter.post('/', async (req, res, next) => {
         // data.password = await bcrypt.hash(password, 10);
 
         const newUser = await User.create(data);
-        req.session.user = newUser;
+        if (newUser) req.session.user = newUser;
         return res.redirect('/');
       } else {
         // User found
