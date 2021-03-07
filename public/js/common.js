@@ -124,7 +124,7 @@ document.addEventListener('click', (e) => {
 
 function createPostHtml(postData, largeFont = false) {
   if (postData == null) return alert('post object is null');
-
+  console.log(postData);
   const isRetweet = postData.retweetData !== undefined;
   const retweetedBy = isRetweet ? postData.postedBy.username : null;
   postData = isRetweet ? postData.retweetData : postData;
@@ -147,7 +147,7 @@ function createPostHtml(postData, largeFont = false) {
   if (isRetweet) {
     retweetText = `<span>
                       <i class='fas fa-retweet'></i>
-                      Retweeted by <a href='/profile/${retweetedBy}'>@${retweetedBy}</a>    
+                      Retweeted by <a href='/profile/${retweetedBy}'>${retweetedBy}</a>    
                   </span>`;
   }
 

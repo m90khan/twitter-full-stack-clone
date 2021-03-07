@@ -98,6 +98,7 @@ postRouter.post('/:id/retweet', async (req, res, next) => {
 
   const option = deletedPost != null ? '$pull' : '$addToSet';
 
+  // if deletePost is null then create post
   let repost = deletedPost;
 
   if (repost == null) {
@@ -108,7 +109,7 @@ postRouter.post('/:id/retweet', async (req, res, next) => {
       }
     );
   }
-
+  // if repost has a value
   // Insert user like
   req.session.user = await User.findByIdAndUpdate(
     userId,
@@ -207,7 +208,8 @@ async function getPosts(filter) {
       .catch((error) => console.log(error));
 
     results = await User.populate(results, { path: 'replyTo.postedBy' });
-    return await User.populate(results, { path: 'retweetData.postedBy' });
+    results = await User.populate(results, { path: 'retweetData.postedBy' });
+    return results;
   } catch (error) {
     console.log(error);
   }

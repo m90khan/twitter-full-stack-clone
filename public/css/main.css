@@ -297,10 +297,7 @@ button span {
   color: var(--blue);
   border-radius: 50rem;
 }
-.postButtonContainer button span,
-i {
-  pointer-events: none;
-}
+
 /* .postButtonContainer button span {
   color: var(--greyText);
 } */
