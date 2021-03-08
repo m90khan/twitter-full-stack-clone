@@ -5,7 +5,7 @@ mixin createPostForm(userLoggedIn)
         .textareaContainer
             textarea#postTextarea(placeholder="What's happening?")
             .buttonsContainer
-                button#submitPostButton(disabled="") Tweet
+                button#submitPostButton.tweet-btn(disabled="") Tweet
 
 mixin createReplyModal(userLoggedIn)
     #replyModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='replyModalLabel', aria-hidden='true')
@@ -13,18 +13,18 @@ mixin createReplyModal(userLoggedIn)
             .modal-content
                 .modal-header
                     h5#replyModalLabel.modal-title Reply
-                    button.close(type='button', data-dismiss='modal', aria-label='Close')
-                    span(aria-hidden='true') &times;
+                    button.btn-close.btn-close--modal(  data-bs-dismiss='modal', aria-label='Close')
+                    span(aria-hidden='true'): i(data-feather='x')
                 .modal-body
                     #originalPostContainer
                     .postFormContainer
                         .userImageContainer
                             img(src=userLoggedIn.profilePic, alt="User's profile picture")
                         .textareaContainer
-                            textarea#replyTextarea(placeholder="What's happening?")
+                            textarea#replyTextarea(placeholder="Tweet your reply"  )
                 .modal-footer
-                    button.btn.btn-secondary(type='button', data-dismiss='modal') Close
-                    button#submitReplyButton.btn.btn-primary(type='button', disabled="") Reply
+                    //- button.btn.btn-secondary(type='button', data-bs-dismiss='modal') Close
+                    button#submitReplyButton.tweet-btn(  disabled="") Reply
 
 mixin createDeletePostModal()
     #deletePostModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='deletePostModalLabel', aria-hidden='true')
@@ -32,8 +32,8 @@ mixin createDeletePostModal()
             .modal-content
                 .modal-header
                     h5#deletePostModalLabel.modal-title Delete the post?
-                    button.close(type='button', data-dismiss='modal', aria-label='Close')
-                    span(aria-hidden='true') &times;
+                    button.close(  data-dismiss='modal', aria-label='Close')
+                    span(aria-hidden='true'): i(data-feather='x')
                 .modal-body
                     p You won't be able to delete this.
                 .modal-footer
@@ -63,7 +63,7 @@ mixin createImageUploadModal()
                 .modal-header
                     h5#imageUploadModalLabel.modal-title Upload a new profile picture
                     button.close(type='button', data-dismiss='modal', aria-label='Close')
-                    span(aria-hidden='true') &times;
+                    span(aria-hidden='true'): i(data-feather='x')
                 .modal-body
                     input#filePhoto(type="file", name="filePhoto")
 
@@ -80,7 +80,7 @@ mixin createCoverPhotoUploadModal()
                 .modal-header
                     h5#coverPhotoModalLabel.modal-title Upload a new cover photo
                     button.close(type='button', data-dismiss='modal', aria-label='Close')
-                    span(aria-hidden='true') &times;
+                    span(aria-hidden='true'): i(data-feather='x')
                 .modal-body
                     input#coverPhoto(type="file", name="filePhoto")
 
@@ -97,7 +97,7 @@ mixin createPinnedPostModal()
                 .modal-header
                     h5#confirmPinModalLabel.modal-title Pin this post?
                     button.close(type='button', data-dismiss='modal', aria-label='Close')
-                    span(aria-hidden='true') &times;
+                    span(aria-hidden='true'): i(data-feather='x')
                 .modal-body
                     p This post will appear at the top of your profile. You can only pin one post.
                 .modal-footer
@@ -111,7 +111,7 @@ mixin createUnpinPostModal()
                 .modal-header
                     h5#unpinModalLabel.modal-title Unpin the post?
                     button.close(type='button', data-dismiss='modal', aria-label='Close')
-                    span(aria-hidden='true') &times;
+                    span(aria-hidden='true'): i(data-feather='x')
                 .modal-body
                     p This post will be unpinned.
                 .modal-footer
@@ -148,7 +148,7 @@ mixin createChatNameModal(chat)
                 .modal-header
                     h5#chatNameModalLabel.modal-title Change the chat name
                     button.close(type='button', data-dismiss='modal', aria-label='Close')
-                    span(aria-hidden='true') &times;
+                    span(aria-hidden='true'): i(data-feather='x')
                 .modal-body
                     input#chatNameTextbox(type="text", placeholder="Enter a name for this chat", value=chat.chatName)
                 .modal-footer

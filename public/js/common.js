@@ -9,75 +9,107 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 // POST & REPLY BUTTONS - KEYUP
-[
-  document.querySelector('#postTextarea'),
-  document.querySelector('#replyTextarea'),
-].forEach((item) => {
-  item.addEventListener('keyup', (event) => {
-    const textbox = event.target;
-    const value = textbox.value.trim();
-    // replay
-    const isModal = textbox.parentElement.length == 1;
+window.onload = (function () {
+  [
+    document.querySelector('#postTextarea'),
+    document.querySelector('#replyTextarea'),
+  ].forEach((item) => {
+    if (item !== null) {
+      item.addEventListener('keyup', function (event) {
+        const textbox = event.target;
+        const value = textbox.value.trim();
+        // replay
+        const isModal = textbox.closest('.modal');
 
-    const submitButton = isModal
-      ? document.querySelector('#submitReplyButton')
-      : document.querySelector('#submitPostButton');
-    // submit
+        const submitButton = isModal
+          ? document.querySelector('#submitReplyButton')
+          : document.querySelector('#submitPostButton');
+        // submit
 
-    if (submitButton.length == 0) return alert('No submit button found');
+        if (submitButton.length == 0) return alert('No submit button found');
 
-    if (value == '') {
-      submitButton.disabled = true;
-      return;
+        if (value == '') {
+          submitButton.disabled = true;
+          return;
+        }
+        submitButton.disabled = false;
+      });
     }
-    submitButton.disabled = false;
   });
-});
+})();
 // POST & REPLY BUTTONS - ON CLICK
-[
-  document.querySelector('#submitPostButton'),
-  document.querySelector('#submitReplyButton'),
-].forEach((item) => {
-  item.addEventListener('click', async (event) => {
-    const button = event.target;
-    // replay
-    const isModal = button.parentElement.length == 1;
-    const textbox = document.querySelector('#postTextarea');
-    // isModal
-    //   ? document.querySelector('#replyTextarea')
-    //   : document.querySelector('#postTextarea');
-    // submit
-    const data = {
-      content: textbox.value,
-    };
-    if (isModal) {
-      const id = document.querySelector('.info').dataset.id;
-      if (id == null) return alert('Button id is null');
-      data.replyTo = id;
-    }
+window.onload = (function () {
+  [
+    document.querySelector('#submitPostButton'),
+    document.querySelector('#submitReplyButton'),
+  ].forEach((item) => {
+    if (item !== null) {
+      item.addEventListener('click', async (event) => {
+        const button = event.target;
+        // replay
+        const isModal = button.closest('.modal');
+        const textbox = isModal
+          ? document.querySelector('#replyTextarea')
+          : document.querySelector('#postTextarea');
+        // submit
+        const data = {
+          content: textbox.value,
+        };
+        if (isModal) {
+          const id = button.dataset.id;
+          if (id == null) return alert('Button id is null');
+          data.replyTo = id;
+        }
 
-    axios({
-      method: 'POST',
-      url: '/api/posts',
-      data,
-    }).then((postData) => {
-      if (postData.replyTo) {
-        emitNotification(postData.replyTo.postedBy);
-        location.reload();
-      } else {
-        const html = createPostHtml(postData.data);
-        document.querySelector('.postsContainer').insertAdjacentHTML('afterbegin', html);
-        textbox.value = '';
-        button.disabled = true;
-      }
-    });
+        axios({
+          method: 'POST',
+          url: '/api/posts',
+          data,
+        }).then((postData) => {
+          if (postData.replyTo) {
+            // emitNotification(postData.replyTo.postedBy);
+            location.reload();
+          } else {
+            const html = createPostHtml(postData.data);
+            document
+              .querySelector('.postsContainer')
+              .insertAdjacentHTML('afterbegin', html);
+            textbox.value = '';
+            button.disabled = true;
+          }
+        });
+      });
+    }
+  });
+})();
+// REPLY MODAL : ON SHOW
+document.getElementById('replyModal').addEventListener('shown.bs.modal', (event) => {
+  event.stopPropagation();
+  event.preventDefault();
+  const button = event.relatedTarget;
+  const postId = getPostIdFromElement(button);
+
+  const replyInput = document.getElementById('replyTextarea');
+  replyInput.focus();
+  const originalPostContainer = document.getElementById('originalPostContainer');
+  let submitButton = document.getElementById('submitReplyButton');
+  submitButton.dataset.id = postId;
+  axios({
+    method: 'GET',
+    url: `/api/posts/${postId}`,
+  }).then(({ data }) => {
+    outputPosts(data.postData, originalPostContainer);
   });
 });
-
-document.addEventListener('click', (e) => {
-  e.stopPropagation();
-  e.preventDefault();
-  let button = e.target;
+// REPLY MODAL : REMOVE FETCHED HTML
+document.getElementById('replyModal').addEventListener('hidden.bs.modal', (event) => {
+  const originalPostContainer = document.getElementById('originalPostContainer');
+  originalPostContainer.innerHTML = '';
+});
+// LIKE & RETWEET BUTTONS
+document.addEventListener('click', (event) => {
+  event.stopPropagation();
+  let button = event.target;
   if (button.classList.contains('likeButton')) {
     const postId = getPostIdFromElement(button);
     if (postId === undefined) return;
@@ -99,6 +131,7 @@ document.addEventListener('click', (e) => {
       }
     });
   }
+  // Retweet
   if (button.classList.contains('retweetButton')) {
     const postId = getPostIdFromElement(button);
     if (postId === undefined) return;
@@ -120,11 +153,19 @@ document.addEventListener('click', (e) => {
       }
     });
   }
+  // Redirect User to Post screen
+  if (button.closest('.post')) {
+    event.pro;
+    // const element = event.target;
+    const postId = getPostIdFromElement(button);
+    if (postId !== undefined && button.nodeName !== 'BUTTON') {
+      window.location.href = '/posts/' + postId;
+    }
+  }
 });
 
 function createPostHtml(postData, largeFont = false) {
   if (postData == null) return alert('post object is null');
-  console.log(postData);
   const isRetweet = postData.retweetData !== undefined;
   const retweetedBy = isRetweet ? postData.postedBy.username : null;
   postData = isRetweet ? postData.retweetData : postData;
@@ -147,22 +188,25 @@ function createPostHtml(postData, largeFont = false) {
   if (isRetweet) {
     retweetText = `<span>
                       <i class='fas fa-retweet'></i>
-                      Retweeted by <a href='/profile/${retweetedBy}'>${retweetedBy}</a>    
+                       <a href='/profile/${retweetedBy}'>${
+      userLoggedIn.username == retweetedBy
+        ? 'You Retweeted'
+        : 'Retweeted by ' + retweetedBy
+    }</a>    
                   </span>`;
   }
-
   let replyFlag = '';
   if (postData.replyTo && postData.replyTo._id) {
     if (!postData.replyTo._id) {
       return alert('Reply to is not populated');
-    } else if (!postData.replyTo.postedBy._id) {
+    } else if (!postData.replyTo.postedBy) {
       return alert('Posted by is not populated');
     }
 
     const replyToUsername = postData.replyTo.postedBy.username;
-    replyFlag = `<div class='replyFlag'>
-                      Replying to <a href='/profile/${replyToUsername}'>@${replyToUsername}<a>
-                  </div>`;
+    replyFlag = `<div class='replyFlag greyText'>
+                  Replying to <a href='/profile/${replyToUsername}'>@${replyToUsername}<a>
+                </div>`;
   }
 
   let buttons = '';
@@ -180,7 +224,8 @@ function createPostHtml(postData, largeFont = false) {
                   <button data-id="${postData._id}" data-toggle="modal" data-target="#deletePostModal"><i class='fas fa-times'></i></button>`;
   }
 
-  return `    <div class="post ${largeFontClass}" data-id="${postData._id}">
+  return `
+  <div class="post ${largeFontClass}" data-id="${postData._id}">
   <div class="postActionContainer">
     ${retweetText}
   </div>
@@ -194,9 +239,8 @@ function createPostHtml(postData, largeFont = false) {
         <a
           href="/profile/${postedBy.username}"
           class="displayName"
-          >${displayName}</a
-        >
-        <span class="username">@${postedBy.username}</span>
+          >${displayName}</a>
+        <span class="username"> @${postedBy.username}</span>
         <span class="date">· ${timestamp}</span>
         ${buttons}
       </div>
@@ -206,7 +250,7 @@ function createPostHtml(postData, largeFont = false) {
       </div>
       <div class="postFooter">
         <div class="postButtonContainer">
-          <button data-toggle="modal" data-target="#replyModal">
+          <button type="button"  class='retweetButtonModal'  data-bs-toggle="modal" data-bs-target="#replyModal">
             <i class="far fa-comment"></i>
           </button>
         </div>

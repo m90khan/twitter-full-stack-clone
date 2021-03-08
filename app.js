@@ -31,6 +31,7 @@ app.use(
 app.use('/login', require('./routes/loginRouter'));
 app.use('/register', require('./routes/registerRouter'));
 app.use('/logout', require('./routes/logoutRouter'));
+app.use('/posts', middleware.requireLogin, require('./routes/postRouter'));
 
 //API
 app.use('/api/posts', require('./routes/api/posts'));

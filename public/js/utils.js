@@ -33,3 +33,11 @@ function getPostIdFromElement(element) {
 
   return postId;
 }
+
+//
+// const replyModal = document.getElementById('replyModal');
+
+// replyModal.addEventListener('shown.bs.modal', function () {
+//   const replyInput = document.getElementById('replyTextarea');
+//   replyInput.focus();
+// });

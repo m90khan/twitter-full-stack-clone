@@ -6,13 +6,19 @@
   --buttonHoverBg: #17202a;
   --lightGrey: rgb(230, 236, 240);
   --spacing: 15px;
-  --greyText: #424446;
+  --greyText: rgb(69, 79, 88);
   --greyButtonText: rgba(0, 0, 0, 0.34);
   --red: rgb(226, 34, 94);
   --redBackground: rgba(226, 34, 94, 0.3);
   --green: rgb(23, 191, 99);
   --greenBackground: rgba(23, 191, 99, 0.3);
   --white: #fff;
+  --black: #000;
+}
+
+.greyText {
+  color: var(--greyText);
+  font-weight: 400;
 }
 html {
   padding: 0;
@@ -76,9 +82,18 @@ nav {
   height: 100%;
 }
 .tweet-btn {
-  padding: 1rem 2rem;
   background-color: var(--blue);
-  border-radius: 50rem;
+  border-radius: 5rem;
+  color: white;
+  border: none;
+  border-radius: 5rem;
+  padding: 0.4rem 1.2rem;
+  font-size: 1.1rem;
+  margin-top: 0.2rem;
+  font-weight: 700;
+}
+.tweet-btn--large {
+  padding: 1rem 2rem;
   width: 100%;
   margin-top: 1rem;
 }
@@ -90,6 +105,10 @@ nav {
 .tweet-btn:hover {
   background-color: #047ecf;
   color: #fff;
+}
+.tweet-btn:disabled {
+  background-color: var(--blueDark);
+  color: rgb(182, 182, 182);
 }
 nav a {
   padding: 0rem 2rem 0 1rem;
@@ -110,7 +129,7 @@ nav a h1 {
   nav a h1 {
     display: none;
   }
-  .tweet-btn {
+  .tweet-btn--large {
     padding: 0.5rem;
     background-color: var(--blue);
     border-radius: 50%;
@@ -157,6 +176,7 @@ button span {
   border-right: 1px solid var(--greyText);
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 .titleContainer {
@@ -167,6 +187,7 @@ button span {
   border-bottom: 1px solid var(--greyText);
   flex-shrink: 0;
   color: var(--white);
+  background: var(--black);
 }
 
 .titleContainer h1 {
@@ -179,7 +200,24 @@ button span {
   border-bottom: 0.6rem solid var(--greyText);
   flex-shrink: 0;
 }
+.modal {
+  background-color: rgba(106, 127, 145, 0.4);
+}
+.btn-close--modal {
+  position: relative;
+  left: 0.8rem;
+  background: transparent;
+}
+.modal-content {
+  background-color: var(--black) !important;
+  border-radius: 1rem;
+  color: var(--blue);
+}
 
+.modal-header,
+.modal-footer {
+  border-color: var(--greyText);
+}
 .modal .postFormContainer {
   border: none;
   padding: 0;
@@ -218,20 +256,16 @@ button span {
   font-size: 19px;
 }
 
-#submitPostButton {
+/* #submitPostButton {
   background-color: var(--blue);
   color: white;
   border: none;
   border-radius: 5rem;
-  padding: 0.5rem 1.5rem;
-  font-size: 1.2rem;
+  padding: 0.4rem 1.2rem;
+  font-size: 1.1rem;
   margin-top: 0.2rem;
-}
-
-#submitPostButton:disabled {
-  background-color: var(--blueDark);
-  color: rgb(182, 182, 182);
-}
+  font-weight: bold;
+} */
 
 /* POST */
 .post {
@@ -332,7 +366,7 @@ button span {
   color: var(--green);
 }
 .replyFlag {
-  margin-bottom: 5px;
+  margin-bottom: 0.5rem;
 }
 
 .replyFlag a {
@@ -341,7 +375,8 @@ button span {
 
 .post.largeFont .postBody,
 .post.largeFont .postFooter {
-  font-size: 1.8rem;
+  font-size: 1.5rem;
+  font-weight: 700;
 }
 
 .postBody span {

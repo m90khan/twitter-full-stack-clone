@@ -1,11 +1,11 @@
 const express = require('express');
 
-const postRouter = express.Router();
+const postsRouter = express.Router();
 const User = require('../../models/UserSchema');
 const Post = require('../../models/PostSchema');
 const { connections } = require('mongoose');
 
-postRouter.get('/', async (req, res, next) => {
+postsRouter.get('/', async (req, res, next) => {
   const searchObj = req.query;
 
   try {
@@ -47,8 +47,24 @@ postRouter.get('/', async (req, res, next) => {
     res.status(400).send('Some Went Wrong');
   }
 });
+postsRouter.get('/:id', async (req, res, next) => {
+  const postId = req.params.id;
 
-postRouter.put('/:id/like', async (req, res, next) => {
+  const postData = await getPosts({ _id: postId });
+
+  const results = {
+    postData: postData[0],
+  };
+
+  if (postData.replyTo !== undefined) {
+    results.replyTo = postData.replyTo;
+  }
+
+  results.replies = await getPosts({ replyTo: postId });
+
+  res.status(200).send(results);
+});
+postsRouter.put('/:id/like', async (req, res, next) => {
   const postId = req.params.id;
   const userId = req.session.user._id;
 
@@ -83,7 +99,7 @@ postRouter.put('/:id/like', async (req, res, next) => {
 
   res.status(200).send(post);
 });
-postRouter.post('/:id/retweet', async (req, res, next) => {
+postsRouter.post('/:id/retweet', async (req, res, next) => {
   const postId = req.params.id;
   const userId = req.session.user._id;
 
@@ -137,7 +153,7 @@ postRouter.post('/:id/retweet', async (req, res, next) => {
   res.status(200).send(post);
 });
 
-postRouter.post('/', async (req, res, next) => {
+postsRouter.post('/', async (req, res, next) => {
   if (!req.body.content) {
     console.log('Content param not sent with request');
     return res.sendStatus(400);
@@ -172,7 +188,7 @@ postRouter.post('/', async (req, res, next) => {
       res.sendStatus(400);
     });
 });
-postRouter.delete('/:id', (req, res, next) => {
+postsRouter.delete('/:id', (req, res, next) => {
   Post.findByIdAndDelete(req.params.id)
     .then(() => res.sendStatus(202))
     .catch((error) => {
@@ -181,7 +197,7 @@ postRouter.delete('/:id', (req, res, next) => {
     });
 });
 // Update
-postRouter.put('/:id', async (req, res, next) => {
+postsRouter.put('/:id', async (req, res, next) => {
   if (req.body.pinned !== undefined) {
     await Post.updateMany({ postedBy: req.session.user }, { pinned: false }).catch(
       (error) => {
@@ -214,4 +230,4 @@ async function getPosts(filter) {
     console.log(error);
   }
 }
-module.exports = postRouter;
+module.exports = postsRouter;

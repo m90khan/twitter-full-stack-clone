@@ -7,8 +7,8 @@ block content
         - if (errorMessage)
             .alert.alert-danger.errorMessage(role='alert')= `Error: ${errorMessage}` 
         form(method="post")
-            input(type="text", name="logUsername", placeholder="Phone, email, or username", value="m90khan" required="")
-            input(type="password", name="logPassword", placeholder="Password", value="test1234" required="")
+            input(type="text", name="logUsername", placeholder="Phone, email, or username", value="" required="")
+            input(type="password", name="logPassword", placeholder="Password", value="" required="")
             input(type="submit", value="Login")
         p
             a(href="/register") Forgot Password? -  
