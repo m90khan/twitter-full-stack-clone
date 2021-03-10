@@ -9,14 +9,14 @@ const UserSchema = new Schema(
       type: String,
       required: [true, 'Please provide first name.'],
       trim: true,
-      maxlength: [50, 'First Name cannot be more than 30 characters'],
+      maxlength: [50, 'First Name cannot be more than 50 characters'],
       minlength: [2, 'First Name cannot be less than 3 characters'],
     },
     lastName: {
       type: String,
       required: [true, 'Please provide last name.'],
       trim: true,
-      maxlength: [50, 'Last Name cannot be more than 30 characters'],
+      maxlength: [50, 'Last Name cannot be more than 50 characters'],
       minlength: [2, 'Last Name cannot be less than 3 characters'],
     },
     username: {
@@ -32,6 +32,11 @@ const UserSchema = new Schema(
       unique: [true, 'This email address is already exists'],
       validate: [validator.isEmail, 'Please provide a valid email address'],
       lowercase: true,
+    },
+    description: {
+      type: String,
+      trim: true,
+      maxlength: [250, 'Description cannot be more than 250 characters'],
     },
     password: {
       type: String,

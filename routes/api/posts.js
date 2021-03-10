@@ -6,13 +6,13 @@ const Post = require('../../models/PostSchema');
 const { connections } = require('mongoose');
 
 postsRouter.get('/', async (req, res, next) => {
-  const searchObj = req.query;
-
+  let searchObj = req.query;
+  /* url: `/api/posts?postedBy=${profileUserId}&pinned=${true}` */
   try {
     if (searchObj.isReply !== undefined) {
       const isReply = searchObj.isReply == 'true';
       searchObj.replyTo = { $exists: isReply };
-      delete searchObj.isReply;
+      delete searchObj.isReply; // isReply does not exist in schema
     }
 
     if (searchObj.search !== undefined) {
@@ -52,15 +52,15 @@ postsRouter.get('/:id', async (req, res, next) => {
 
   const postData = await getPosts({ _id: postId });
 
-  const results = {
+  let results = {
     postData: postData[0],
   };
-
   if (postData.replyTo !== undefined) {
     results.replyTo = postData.replyTo;
   }
 
   results.replies = await getPosts({ replyTo: postId });
+  console.log(results);
 
   res.status(200).send(results);
 });
@@ -188,6 +188,7 @@ postsRouter.post('/', async (req, res, next) => {
       res.sendStatus(400);
     });
 });
+//Delete
 postsRouter.delete('/:id', (req, res, next) => {
   Post.findByIdAndDelete(req.params.id)
     .then(() => res.sendStatus(202))
@@ -214,7 +215,7 @@ postsRouter.put('/:id', async (req, res, next) => {
       res.sendStatus(400);
     });
 });
-async function getPosts(filter) {
+const getPosts = async (filter) => {
   try {
     let results = await Post.find(filter)
       .populate('postedBy')
@@ -229,5 +230,5 @@ async function getPosts(filter) {
   } catch (error) {
     console.log(error);
   }
-}
+};
 module.exports = postsRouter;

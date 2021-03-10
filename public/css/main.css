@@ -1,7 +1,7 @@
 :root {
   --blue: #1fa2f1;
   --blueLight: #9bd1f9;
-  --blueDark: #0364a5;
+  --blueDark: #0064a7af;
   --blueBackground: rgba(212, 237, 255, 0.6);
   --buttonHoverBg: #17202a;
   --lightGrey: rgb(230, 236, 240);
@@ -162,7 +162,7 @@ nav .active-item {
 button {
   background-color: transparent;
   border: none;
-  color: var(--greyButtonText);
+  color: var(--greyText);
 }
 
 button i,
@@ -395,7 +395,7 @@ button span {
 }
 
 .coverPhotoSection {
-  height: 180px;
+  height: 14rem;
   background-color: var(--blue);
   position: relative;
 }
@@ -413,7 +413,7 @@ button span {
 }
 
 .profileHeaderContainer .userImageContainer img {
-  border: 4px solid #fff;
+  border: 4px solid var(--black);
 }
 
 .profileHeaderContainer .profileButtonsContainer {
@@ -424,18 +424,21 @@ button span {
 
 .profileButton,
 .followButton {
-  border: 1px solid var(--blue);
+  border: 2px solid var(--blue);
   color: var(--blue);
   font-weight: bold;
-  padding: 5px 15px;
-  border-radius: 60px;
+  padding: 0.2rem 0.8rem;
+  border-radius: 5rem;
   display: inline-block;
   margin-left: var(--spacing);
 }
-
+.followButton {
+  padding: 0.3rem 0.8rem;
+}
 .profileButton:hover,
 .followButton:hover {
-  background-color: var(--blueBackground);
+  background-color: var(--blueDark);
+  color: var(--white);
 }
 
 .followButton.following {
@@ -446,12 +449,12 @@ button span {
 .profileHeaderContainer .userDetailsContainer {
   display: flex;
   flex-direction: column;
-  padding: 0 var(--spacing);
+  padding: 1rem var(--spacing);
 }
 
 .followersContainer .value {
   font-weight: bold;
-  margin-right: 5px;
+  margin-right: 0.6rem;
 }
 
 .followersContainer span:not(.value) {
@@ -459,7 +462,7 @@ button span {
 }
 
 .followersContainer a {
-  margin-right: 15px;
+  margin-right: 1.1rem;
 }
 
 .followersContainer a:hover {
@@ -468,7 +471,7 @@ button span {
 
 .tabsContainer {
   display: flex;
-  border-bottom: 1px solid var(--lightGrey);
+  border-bottom: 1px solid var(--greyText);
   flex-shrink: 0;
 }
 
@@ -489,29 +492,45 @@ button span {
 
 .tab:hover {
   color: var(--blue);
-  background-color: var(--blueBackground);
+  background-color: var(--blueDark);
 }
 
 .noResults {
   padding: var(--spacing);
 }
 
-.resultsContainer {
+.followResultsContainer {
   display: flex;
   flex-direction: column;
 }
 
-.resultsContainer .user {
+.followResultsContainer .user {
   padding: var(--spacing);
   display: flex;
-  border-bottom: 1px solid var(--lightGrey);
+  border-bottom: 1px solid var(--greyText);
 }
 
 .user .userDetailsContainer {
   flex: 1;
   padding: 0 var(--spacing);
 }
-
+.userDetailsContainer .user-description {
+  color: var(--white);
+  font-weight: 400;
+  margin: 0.2rem 0 0 0;
+}
+.user .userDetailsContainer a {
+  display: block;
+  color: var(--white);
+  font-weight: bold;
+}
+.user .userDetailsContainer .follow-you {
+  background: rgba(106, 127, 145, 0.4);
+  color: var(--white);
+  opacity: 0.5;
+  padding: 0.1rem 0.4rem;
+  font-size: 0.9rem;
+}
 .profilePictureButton,
 .coverPhotoButton {
   position: absolute;
@@ -557,7 +576,7 @@ button span {
 }
 
 .pinnedPostContainer {
-  border-bottom: 10px solid rgb(230, 236, 240);
+  border-bottom: 0.3rem solid var(--greyText);
 }
 
 .searchBarContainer {

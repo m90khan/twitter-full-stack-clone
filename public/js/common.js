@@ -38,75 +38,113 @@ window.onload = (function () {
   });
 })();
 // POST & REPLY BUTTONS - ON CLICK
-window.onload = (function () {
-  [
-    document.querySelector('#submitPostButton'),
-    document.querySelector('#submitReplyButton'),
-  ].forEach((item) => {
-    if (item !== null) {
-      item.addEventListener('click', async (event) => {
-        const button = event.target;
-        // replay
-        const isModal = button.closest('.modal');
-        const textbox = isModal
-          ? document.querySelector('#replyTextarea')
-          : document.querySelector('#postTextarea');
-        // submit
-        const data = {
-          content: textbox.value,
-        };
-        if (isModal) {
-          const id = button.dataset.id;
-          if (id == null) return alert('Button id is null');
-          data.replyTo = id;
-        }
-
-        axios({
-          method: 'POST',
-          url: '/api/posts',
-          data,
-        }).then((postData) => {
-          if (postData.replyTo) {
-            // emitNotification(postData.replyTo.postedBy);
-            location.reload();
-          } else {
-            const html = createPostHtml(postData.data);
-            document
-              .querySelector('.postsContainer')
-              .insertAdjacentHTML('afterbegin', html);
-            textbox.value = '';
-            button.disabled = true;
+document.addEventListener('DOMContentLoaded', function () {
+  (function () {
+    [
+      document.querySelector('#submitPostButton'),
+      document.querySelector('#submitReplyButton'),
+    ].forEach((item) => {
+      if (item !== null) {
+        item.addEventListener('click', async (event) => {
+          const button = event.target;
+          // replay
+          const isModal = button.closest('.modal');
+          const textbox = isModal
+            ? document.querySelector('#replyTextarea')
+            : document.querySelector('#postTextarea');
+          // submit
+          const data = {
+            content: textbox.value,
+          };
+          if (isModal) {
+            const id = button.dataset.id;
+            if (id == null) return alert('Button id is null');
+            data.replyTo = id;
           }
-        });
-      });
-    }
-  });
-})();
-// REPLY MODAL : ON SHOW
-document.getElementById('replyModal').addEventListener('shown.bs.modal', (event) => {
-  event.stopPropagation();
-  event.preventDefault();
-  const button = event.relatedTarget;
-  const postId = getPostIdFromElement(button);
 
-  const replyInput = document.getElementById('replyTextarea');
-  replyInput.focus();
-  const originalPostContainer = document.getElementById('originalPostContainer');
-  let submitButton = document.getElementById('submitReplyButton');
-  submitButton.dataset.id = postId;
-  axios({
-    method: 'GET',
-    url: `/api/posts/${postId}`,
-  }).then(({ data }) => {
-    outputPosts(data.postData, originalPostContainer);
-  });
+          axios({
+            method: 'POST',
+            url: '/api/posts',
+            data,
+          }).then((postData) => {
+            if (postData.replyTo) {
+              // emitNotification(postData.replyTo.postedBy);
+              location.reload();
+            } else {
+              const html = createPostHtml(postData.data);
+              document
+                .querySelector('.postsContainer')
+                .insertAdjacentHTML('afterbegin', html);
+              textbox.value = '';
+              button.disabled = true;
+            }
+          });
+        });
+      }
+    });
+  })();
 });
-// REPLY MODAL : REMOVE FETCHED HTML
-document.getElementById('replyModal').addEventListener('hidden.bs.modal', (event) => {
-  const originalPostContainer = document.getElementById('originalPostContainer');
-  originalPostContainer.innerHTML = '';
+// REPLY MODAL : ON SHOW
+window.onload = (function () {
+  if (document.getElementById('replyModal') !== null) {
+    document.getElementById('replyModal').addEventListener('shown.bs.modal', (event) => {
+      event.stopPropagation();
+      event.preventDefault();
+      const button = event.relatedTarget;
+      const postId = getPostIdFromElement(button);
+
+      const replyInput = document.getElementById('replyTextarea');
+      replyInput.focus();
+      const originalPostContainer = document.getElementById('originalPostContainer');
+      let submitButton = document.getElementById('submitReplyButton');
+      submitButton.dataset.id = postId;
+      axios({
+        method: 'GET',
+        url: `/api/posts/${postId}`,
+      }).then(({ data }) => {
+        outputPosts(data.postData, originalPostContainer);
+      });
+    });
+    // REPLY MODAL : REMOVE FETCHED HTML
+    document.getElementById('replyModal').addEventListener('hidden.bs.modal', (event) => {
+      const originalPostContainer = document.getElementById('originalPostContainer');
+      originalPostContainer.innerHTML = '';
+    });
+  }
+})();
+//Delete Post MODAL
+// Delete MODAL : ON SHOW
+document.addEventListener('DOMContentLoaded', function () {
+  if (document.getElementById('deletePostModal') !== null) {
+    document
+      .getElementById('deletePostModal')
+      .addEventListener('shown.bs.modal', (event) => {
+        event.stopPropagation();
+        event.preventDefault();
+        const button = event.relatedTarget;
+        const postId = getPostIdFromElement(button);
+
+        let submitButton = document.getElementById('deletePostButton');
+        submitButton.dataset.id = postId;
+      });
+    document.getElementById('deletePostButton').addEventListener('click', (event) => {
+      const postId = event.target.dataset.id;
+      axios({
+        method: 'DELETE',
+        url: `/api/posts/${postId}`,
+      }).then(() => {
+        document.querySelector(
+          '.deletePostModal-alert'
+        ).innerHTML = `<span class='d-flex alert alert-success noResults errorMessage' role='alert'>Tweet Deleted.</span>`;
+        setTimeout(() => {
+          location.reload();
+        }, 1000);
+      });
+    });
+  }
 });
 // LIKE & RETWEET BUTTONS
+// FOLLOW UNFOLLOW
 document.addEventListener('click', (event) => {
   event.stopPropagation();
   let button = event.target;
@@ -155,12 +193,36 @@ document.addEventListener('click', (event) => {
   }
   // Redirect User to Post screen
   if (button.closest('.post')) {
-    event.pro;
     // const element = event.target;
     const postId = getPostIdFromElement(button);
     if (postId !== undefined && button.nodeName !== 'BUTTON') {
       window.location.href = '/posts/' + postId;
     }
+  }
+  // FOLLOW
+  if (button.classList.contains('followButton')) {
+    const userId = button.dataset.user;
+    if (userId === undefined) return;
+    axios({
+      method: 'PUT',
+      url: `/api/users/${userId}/follow`,
+    }).then((postData) => {
+      const { data } = postData;
+      let difference = 1;
+      if (data.following && data.following.includes(userId)) {
+        button.textContent = 'Following';
+        button.classList.add('following');
+      } else {
+        button.textContent = 'Follow';
+        button.classList.remove('following');
+        difference = -1;
+      }
+      let followersLabel = document.querySelector('#followersValue');
+      if (followersLabel.length != 0) {
+        const followersText = parseInt(followersLabel.textContent);
+        followersLabel.textContent = followersText + difference;
+      }
+    });
   }
 });
 
@@ -220,8 +282,8 @@ function createPostHtml(postData, largeFont = false) {
       pinnedPostText = "<i class='fas fa-thumbtack'></i> <span>Pinned post</span>";
     }
 
-    buttons = `<button class='pinButton ${pinnedClass}' data-id="${postData._id}" data-toggle="modal" data-target="${dataTarget}"><i class='fas fa-thumbtack'></i></button>
-                  <button data-id="${postData._id}" data-toggle="modal" data-target="#deletePostModal"><i class='fas fa-times'></i></button>`;
+    buttons = `<button class='pinButton ${pinnedClass}' data-id="${postData._id}" data-bs-toggle="modal" data-bs-target="${dataTarget}"><i class='fas fa-thumbtack'></i></button>
+                  <button data-id="${postData._id}" data-bs-toggle="modal" data-bs-target="#deletePostModal"><i class='fas fa-times'></i></button>`;
   }
 
   return `
@@ -270,4 +332,41 @@ function createPostHtml(postData, largeFont = false) {
     </div>
   </div>
 </div>`;
+}
+
+function createUserHtml(userData, showFollowButton) {
+  const name = userData.firstName + ' ' + userData.lastName;
+  const isFollowing =
+    userLoggedIn.following && userLoggedIn.following.includes(userData._id);
+  const text = isFollowing ? 'Following' : 'Follow';
+  const followText = isFollowing
+    ? "<span class='follow-you '>You Following</span>"
+    : "<span class='follow-you '>Follows You</span>";
+  const buttonClass = isFollowing ? 'followButton following' : 'followButton';
+
+  let followButton = '';
+  if (showFollowButton && userLoggedIn._id != userData._id) {
+    followButton = `<div class='followButtonContainer'>
+                          <button class='${buttonClass}' data-user='${userData._id}'>${text}</button>
+                      </div>`;
+  }
+
+  console.log(followButton);
+
+  return `<div class='user'>
+              <div class='userImageContainer'>
+                  <img src='${userData.profilePic}'>
+              </div>
+              <div class='userDetailsContainer'>
+                  <div class='header'>
+                      <a href='/profile/${userData.username}'>${name}</a>
+                      <span class='username'>@${userData.username}  </span>
+                      ${followText}
+                  </div>
+                  <p class='user-description'>${
+                    userData.description ? userData.description : ''
+                  }</p>
+              </div>
+              ${followButton}
+          </div>`;
 }

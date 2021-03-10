@@ -16,3 +16,19 @@ const outputPosts = (results, container) => {
     );
   }
 };
+
+function outputUsers(results, container) {
+  container.innerHTML = '';
+
+  results.forEach((result) => {
+    const html = createUserHtml(result, true);
+    container.insertAdjacentHTML('beforeend', html);
+  });
+
+  if (results.length == 0) {
+    container.insertAdjacentHTML(
+      'afterbegin',
+      "<span class='d-flex alert alert-danger noResults errorMessage' role='alert'>No results found!.</span>"
+    );
+  }
+}

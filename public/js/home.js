@@ -3,8 +3,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   try {
     const { data } = await axios({
       method: 'GET',
-      url: '/api/posts',
-      followingOnly: true,
+      url: `/api/posts?followingOnly=${true}`,
     });
 
     if (data) {

@@ -31,14 +31,14 @@ mixin createDeletePostModal()
         .modal-dialog(role='document')
             .modal-content
                 .modal-header
-                    h5#deletePostModalLabel.modal-title Delete the post?
-                    button.close(  data-dismiss='modal', aria-label='Close')
+                    h5#deletePostModalLabel.modal-title Delete post?
+                    button.btn-close.btn-close--modal( data-bs-dismiss='modal', aria-label='Close')
                     span(aria-hidden='true'): i(data-feather='x')
-                .modal-body
-                    p You won't be able to delete this.
+                .modal-body.deletePostModal-alert
+                    p.text-light Are you sure?.
                 .modal-footer
-                    button.btn.btn-secondary(type='button', data-dismiss='modal') Close
-                    button#deletePostButton.btn.btn-primary(type='button') Delete
+                    //- button.btn.btn-secondary(type='button', data-dismiss='modal') Close
+                    button#deletePostButton.tweet-btn(type='button') Delete
 
 mixin createPostModals(userLoggedIn)
     +createReplyModal(userLoggedIn)
