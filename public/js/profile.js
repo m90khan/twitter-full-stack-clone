@@ -63,3 +63,24 @@ function outputPinnedPost(results, container) {
     container.insertAdjacentHTML('afterbegin', html);
   });
 }
+
+const editProfileButton = document.querySelector('#submitProfileButton');
+
+if (editProfileButton) {
+  editProfileButton.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const form = new FormData();
+    form.append('firstName', document.getElementById('nameFirstEdit').value);
+    form.append('lastName', document.getElementById('nameLastEdit').value);
+    form.append('location', document.getElementById('locationEdit').value);
+    form.append('bio', document.getElementById('bioEdit').value);
+    console.log(form);
+    axios({
+      method: 'PATCH',
+      url: `/profile/${userLoggedIn._id}/edit`,
+      form,
+    }).then((postData) => {
+      alert('sucess');
+    });
+  });
+}

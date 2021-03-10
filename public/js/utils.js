@@ -41,3 +41,15 @@ function getPostIdFromElement(element) {
 //   const replyInput = document.getElementById('replyTextarea');
 //   replyInput.focus();
 // });
+const getBase64Value = (
+  img // upload image can rither be a file or file like object blob
+) => {
+  /*
+  FileReadeer allows to read blocks of a file
+  */
+  const reader = new FileReader();
+  reader.readAsDataURL(img); // read the contents of the img file
+  reader.onload = () => {
+    return reader.result;
+  };
+};

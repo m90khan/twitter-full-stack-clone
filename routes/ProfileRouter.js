@@ -41,6 +41,11 @@ profileRouter.get('/:username/followers', async (req, res, next) => {
   res.status(200).render('followersAndFollowing', payload);
 });
 
+profileRouter.patch('/:userId/edit', async (req, res, next) => {
+  console.log(req.body);
+  console.log('hello');
+});
+
 async function getPayload(username, userLoggedIn) {
   let user = await User.findOne({ username: username });
 

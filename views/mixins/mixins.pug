@@ -51,6 +51,10 @@ mixin createFollowButton(user, isFollowing)
     - buttonClass = isFollowing ? "followButton following" : "followButton"
     button(class=buttonClass, data-user=user._id) #{text}
 
+mixin editProfileButton(user)
+    - text = "Edit Profile"
+    button(class='editProfile', data-user=user._id data-bs-toggle="modal", data-bs-target="#EditProfileModal") #{text}
+
 mixin createTab(name, href, isSelected)
     - className = isSelected ? "tab active" : "tab"
     a(href=href, class=className)
@@ -62,16 +66,31 @@ mixin createImageUploadModal()
             .modal-content
                 .modal-header
                     h5#imageUploadModalLabel.modal-title Upload a new profile picture
-                    button.close(type='button', data-dismiss='modal', aria-label='Close')
+                    button.btn-close.btn-close--modal( data-bs-dismiss='modal', aria-label='Close')
                     span(aria-hidden='true'): i(data-feather='x')
                 .modal-body
                     input#filePhoto(type="file", name="filePhoto")
-
                     .imagePreviewContainer
                         img#imagePreview
                 .modal-footer
-                    button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
-                    button#imageUploadButton.btn.btn-primary(type='button') Save
+                    //- button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
+                    button#imageUploadButton.tweet-btn(type='button') Save
+
+mixin createImageUploadModal()
+    #imageUploadModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='imageUploadModalLabel', aria-hidden='true')
+        .modal-dialog(role='document')
+            .modal-content
+                .modal-header
+                    h5#imageUploadModalLabel.modal-title Upload a new profile picture
+                    button.btn-close.btn-close--modal( data-bs-dismiss='modal', aria-label='Close')
+                    span(aria-hidden='true'): i(data-feather='x')
+                .modal-body
+                    input#filePhoto(type="file", name="filePhoto")
+                    .imagePreviewContainer
+                        img#imagePreview
+                .modal-footer
+                    //- button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
+                    button#imageUploadButton.tweet-btn(type='button') Save
 
 mixin createCoverPhotoUploadModal()
     #coverPhotoUploadModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='coverPhotoModalLabel', aria-hidden='true')
@@ -79,16 +98,36 @@ mixin createCoverPhotoUploadModal()
             .modal-content
                 .modal-header
                     h5#coverPhotoModalLabel.modal-title Upload a new cover photo
-                    button.close(type='button', data-dismiss='modal', aria-label='Close')
+                    button.btn-close.btn-close--modal( data-bs-dismiss='modal', aria-label='Close')
                     span(aria-hidden='true'): i(data-feather='x')
                 .modal-body
                     input#coverPhoto(type="file", name="filePhoto")
-
                     .imagePreviewContainer
                         img#coverPreview
                 .modal-footer
-                    button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
-                    button#coverPhotoButton.btn.btn-primary(type='button') Save
+                    //- button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
+                    button#coverPhotoButton.tweet-btn(type='button') Save
+mixin createEditProfileForm(userLoggedIn)
+    #EditProfileModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='editProfile', aria-hidden='true')
+        .modal-dialog(role='document')
+            .modal-content
+                .modal-header
+                    h5#editProfile.modal-title Edit Profile
+                    button.btn-close.btn-close--modal( data-bs-dismiss='modal', aria-label='Close')
+                    span(aria-hidden='true'): i(data-feather='x')
+                .modal-body    
+                    .postFormContainer
+                    form
+                        label.form-label(for='firstName') First Name
+                        input#nameFirstEdit( type="text", name="firstName", placeholder="First Name", value=`${userLoggedIn.firstName}` required="")
+                        label.form-label(for='lastName') Last Name
+                        input#nameLastEdit(  type="text", name="lastName", placeholder="Last Name", value=`${userLoggedIn.lastName}` required="")
+                        label.form-label(for='location') Location
+                        input#locationEdit(  type="text", name="location", placeholder="Location", value=`${userLoggedIn.location}` required="")
+                        label.form-label(for='bio') Bio
+                        .profileTextarea
+                            textarea#bioEdit(  name="bio")= `${userLoggedIn.description}`
+                        button#submitProfileButton.tweet-btn(type='submit') Save
 
 mixin createPinnedPostModal()
     #confirmPinModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='confirmPinModalLabel', aria-hidden='true')

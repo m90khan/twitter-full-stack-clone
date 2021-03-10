@@ -226,6 +226,113 @@ document.addEventListener('click', (event) => {
   }
 });
 
+// Crop Profile Image
+document.addEventListener('DOMContentLoaded', function () {
+  const profilePhotoButton = document.querySelector('#filePhoto');
+  if (profilePhotoButton !== null) {
+    profilePhotoButton.addEventListener('change', (event) => {
+      const input = event.target;
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const image = document.getElementById('imagePreview');
+          image.src = e.target.result;
+
+          if (cropper !== undefined) {
+            cropper.destroy();
+          }
+
+          cropper = new Cropper(image, {
+            aspectRatio: 1 / 1,
+            background: false,
+          });
+        };
+        reader.readAsDataURL(input.files[0]);
+      } else {
+        console.log('nope');
+      }
+    });
+  }
+  const coverPhotoButton = document.querySelector('#coverPhoto');
+
+  if (coverPhotoButton !== null) {
+    coverPhotoButton.addEventListener('change', (event) => {
+      const input = event.target;
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const image = document.getElementById('coverPreview');
+          image.src = e.target.result;
+
+          if (cropper !== undefined) {
+            cropper.destroy();
+          }
+
+          cropper = new Cropper(image, {
+            aspectRatio: 16 / 9,
+            background: false,
+          });
+        };
+        reader.readAsDataURL(input.files[0]);
+      } else {
+        console.log('no cover photo');
+      }
+    });
+  }
+});
+
+// Image Upload Profile
+document.addEventListener('DOMContentLoaded', function () {
+  const uploadProfileButton = document.querySelector('#imageUploadButton');
+  if (uploadProfileButton !== null) {
+    uploadProfileButton.addEventListener('click', () => {
+      // get selected area from cropper variable
+      let canvas = cropper.getCroppedCanvas();
+      if (canvas == null) {
+        alert('Error: on uploading image. Make sure it is an image file.');
+        return;
+      }
+
+      canvas.toBlob((blob) => {
+        const formData = new FormData();
+        formData.append('croppedImage', blob);
+        axios({
+          method: 'POST',
+          url: '/api/users/profilePicture',
+          data: formData,
+          headers: { 'Content-Type': false, processData: true },
+        }).then(() => {
+          location.reload();
+        });
+      });
+    });
+  }
+  const uploadCoverButton = document.querySelector('#coverPhotoButton');
+  if (uploadCoverButton !== null) {
+    uploadCoverButton.addEventListener('click', () => {
+      // get selected area from cropper variable
+      let canvas = cropper.getCroppedCanvas();
+      if (canvas == null) {
+        alert('Error: on uploading image. Make sure it is an image file.');
+        return;
+      }
+
+      canvas.toBlob((blob) => {
+        const formData = new FormData();
+        formData.append('croppedImage', blob);
+        axios({
+          method: 'POST',
+          url: '/api/users/coverPhoto',
+          data: formData,
+          headers: { 'Content-Type': false, processData: true },
+        }).then(() => {
+          location.reload();
+        });
+      });
+    });
+  }
+});
+
 function createPostHtml(postData, largeFont = false) {
   if (postData == null) return alert('post object is null');
   const isRetweet = postData.retweetData !== undefined;

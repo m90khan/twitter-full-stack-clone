@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const path = require('path');
 const morgan = require('morgan');
-const middleware = require('./middleware');
+const middleware = require('./utils/middleware');
 const session = require('express-session');
 
 // app.enable('trust proxy');
@@ -33,6 +33,7 @@ app.use('/register', require('./routes/registerRouter'));
 app.use('/logout', require('./routes/logoutRouter'));
 app.use('/posts', middleware.requireLogin, require('./routes/postRouter'));
 app.use('/profile', middleware.requireLogin, require('./routes/profileRouter'));
+app.use('/uploads', require('./routes/uploadRouter'));
 
 //API
 app.use('/api/posts', require('./routes/api/posts'));

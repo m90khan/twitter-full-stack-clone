@@ -1,12 +1,15 @@
 const express = require('express');
 const userRouter = express.Router();
-const multer = require('multer');
 const path = require('path');
+const sharp = require('sharp');
+
 const fs = require('fs');
-const upload = multer({ dest: 'uploads/' });
 const User = require('../../models/UserSchema');
 const Post = require('../../models/PostSchema');
 // const Notification = require('../../models/NotificationSchema');
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' });
+const { Cloudinary } = require('../../utils/cloudinary');
 
 userRouter.get('/', async (req, res, next) => {
   const searchObj = req.query;
@@ -98,13 +101,13 @@ userRouter.post(
   upload.single('croppedImage'),
   async (req, res, next) => {
     if (!req.file) {
-      console.log('No file uploaded with ajax request.');
+      console.log('No file uploaded.');
       return res.sendStatus(400);
     }
 
-    const filePath = `/uploads/images/${req.file.filename}.png`;
+    const filePath = `/uploads/images/profiles/${req.file.filename}.jpeg`;
     const tempPath = req.file.path;
-    const targetPath = path.join(__dirname, `../../${filePath}`);
+    const targetPath = path.join(`${__dirname}`, `../../${filePath}`);
 
     fs.rename(tempPath, targetPath, async (error) => {
       if (error != null) {
@@ -128,7 +131,7 @@ userRouter.post('/coverPhoto', upload.single('croppedImage'), async (req, res, n
     return res.sendStatus(400);
   }
 
-  const filePath = `/uploads/images/${req.file.filename}.png`;
+  const filePath = `/uploads/images/covers/${req.file.filename}.png`;
   const tempPath = req.file.path;
   const targetPath = path.join(__dirname, `../../${filePath}`);
 

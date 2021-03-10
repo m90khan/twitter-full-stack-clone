@@ -38,6 +38,11 @@ const UserSchema = new Schema(
       trim: true,
       maxlength: [250, 'Description cannot be more than 250 characters'],
     },
+    location: {
+      type: String,
+      trim: true,
+      maxlength: [25, 'location cannot be more than 25 characters'],
+    },
     password: {
       type: String,
       required: [true, 'Please provide valid password.'],

@@ -18,15 +18,15 @@ block content
                         img(src=profileUser.coverPhoto, alt="User's cover photo")
 
                     if profileUser._id == userLoggedIn._id
-                        button.coverPhotoButton(data-toggle="modal", data-target="#coverPhotoUploadModal")
-                            i.fas.fa-camera
+                        button.coverPhotoButton(data-bs-toggle="modal", data-bs-target="#coverPhotoUploadModal")
+                            i(data-feather='camera')
 
                 .userImageContainer
                     img(src=profileUser.profilePic, alt="User profile image")
 
                     if profileUser._id == userLoggedIn._id
-                        button.profilePictureButton(data-toggle="modal", data-target="#imageUploadModal")
-                            i.fas.fa-camera
+                        button.profilePictureButton(data-bs-toggle="modal", data-bs-target="#imageUploadModal")
+                            i(data-feather='camera')
 
             .profileButtonsContainer
                 if profileUser._id != userLoggedIn._id
@@ -39,6 +39,8 @@ block content
                     - else
                         +createFollowButton(profileUser, false)
 
+                if userLoggedIn._id != null && profileUser._id == userLoggedIn._id
+                    +editProfileButton(userLoggedIn)
             .userDetailsContainer.text-white
                 span.displayName #{profileUser.firstName} #{profileUser.lastName}
                 span.pb-2.greyText.username @#{profileUser.username}
@@ -61,6 +63,6 @@ block content
         +createPostModals(userLoggedIn)
         +createImageUploadModal()
         +createCoverPhotoUploadModal()
-
+        +createEditProfileForm(userLoggedIn)
 block scripts
     script(src="/js/profile.js")
