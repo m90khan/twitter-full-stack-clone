@@ -16,7 +16,7 @@ postsRouter.get('/', async (req, res, next) => {
     }
 
     if (searchObj.search !== undefined) {
-      searchObj.content = { $regex: searchObj.search, $options: 'i' };
+      searchObj.content = { $regex: searchObj.search, $options: 'i' }; // content is like search , i = caseinsensitive
       delete searchObj.search;
     }
 
@@ -215,6 +215,8 @@ postsRouter.put('/:id', async (req, res, next) => {
       res.sendStatus(400);
     });
 });
+
+// GET FILTER
 const getPosts = async (filter) => {
   try {
     let results = await Post.find(filter)

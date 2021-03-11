@@ -34,6 +34,7 @@ app.use('/logout', require('./routes/logoutRouter'));
 app.use('/posts', middleware.requireLogin, require('./routes/postRouter'));
 app.use('/profile', middleware.requireLogin, require('./routes/profileRouter'));
 app.use('/uploads', require('./routes/uploadRouter'));
+app.use('/search', middleware.requireLogin, require('./routes/searchRouter'));
 
 //API
 app.use('/api/posts', require('./routes/api/posts'));
@@ -50,3 +51,5 @@ app.get('/', middleware.requireLogin, (req, res, next) => {
 });
 
 module.exports = app;
+
+// "TT Firs Neue", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif

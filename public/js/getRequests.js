@@ -28,7 +28,7 @@ function outputUsers(results, container) {
   if (results.length == 0) {
     container.insertAdjacentHTML(
       'afterbegin',
-      "<span class='d-flex alert alert-danger noResults errorMessage' role='alert'>No results found!.</span>"
+      "<span class='w-100 d-flex alert alert-danger noResults errorMessage' role='alert'>No results found!.</span>"
     );
   }
 }

@@ -116,18 +116,22 @@ mixin createEditProfileForm(userLoggedIn)
                     button.btn-close.btn-close--modal( data-bs-dismiss='modal', aria-label='Close')
                     span(aria-hidden='true'): i(data-feather='x')
                 .modal-body    
-                    .postFormContainer
-                    form
+                    .postFormContainer.editFormContainer
+                    form                    
                         label.form-label(for='firstName') First Name
                         input#nameFirstEdit( type="text", name="firstName", placeholder="First Name", value=`${userLoggedIn.firstName}` required="")
                         label.form-label(for='lastName') Last Name
                         input#nameLastEdit(  type="text", name="lastName", placeholder="Last Name", value=`${userLoggedIn.lastName}` required="")
+                        label.form-label(for='email') Email
+                        input#emailEdit(  type="email", name="email", placeholder="Email Address", value=`${userLoggedIn.email}` required="")
+                        label.form-label(for='username') Username
+                        input#usernameEdit(  type="text", name="username", placeholder="Username", value=`${userLoggedIn.username}` required="")
                         label.form-label(for='location') Location
                         input#locationEdit(  type="text", name="location", placeholder="Location", value=`${userLoggedIn.location}` required="")
                         label.form-label(for='bio') Bio
                         .profileTextarea
                             textarea#bioEdit(  name="bio")= `${userLoggedIn.description}`
-                        button#submitProfileButton.tweet-btn(type='submit') Save
+                        button#submitProfileButton.tweet-btn() Save
 
 mixin createPinnedPostModal()
     #confirmPinModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='confirmPinModalLabel', aria-hidden='true')
@@ -135,13 +139,13 @@ mixin createPinnedPostModal()
             .modal-content
                 .modal-header
                     h5#confirmPinModalLabel.modal-title Pin this post?
-                    button.close(type='button', data-dismiss='modal', aria-label='Close')
+                    button.btn-close.btn-close--modal( data-bs-dismiss='modal', aria-label='Close')
                     span(aria-hidden='true'): i(data-feather='x')
-                .modal-body
-                    p This post will appear at the top of your profile. You can only pin one post.
+                .modal-body.createPinnedStatus
+                    p.text-white This post will appear at the top of your profile. You can only pin one post.
                 .modal-footer
-                    button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
-                    button#pinPostButton.btn.btn-primary(type='button') Pin
+                    //- button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
+                    button#pinPostButton.tweet-btn(type='button') Pin
 
 mixin createUnpinPostModal()
     #unpinModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='unpinModalLabel', aria-hidden='true')
@@ -149,13 +153,13 @@ mixin createUnpinPostModal()
             .modal-content
                 .modal-header
                     h5#unpinModalLabel.modal-title Unpin the post?
-                    button.close(type='button', data-dismiss='modal', aria-label='Close')
+                    button.btn-close.btn-close--modal( data-bs-dismiss='modal', aria-label='Close')
                     span(aria-hidden='true'): i(data-feather='x')
-                .modal-body
-                    p This post will be unpinned.
+                .modal-body.createunPinnedStatus
+                    p.text-white This post will be unpinned.
                 .modal-footer
-                    button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
-                    button#unpinPostButton.btn.btn-primary(type='button') Pin
+                    //- button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
+                    button#unpinPostButton.tweet-btn(type='button') unPin
 
 mixin createChatImage(chatData, userLoggedIn)
     if(!chatData)

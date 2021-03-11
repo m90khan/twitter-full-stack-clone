@@ -53,3 +53,9 @@ const getBase64Value = (
     return reader.result;
   };
 };
+
+const sendAlert = (message, container) => {
+  return (document.querySelector(
+    container
+  ).innerHTML = `<span class='w-100 d-flex alert alert-success noResults errorMessage' role='alert'>${message}</span>`);
+};

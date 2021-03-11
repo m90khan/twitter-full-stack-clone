@@ -71,7 +71,30 @@ userRouter.put('/:userId/follow', async (req, res, next) => {
 
   res.status(200).send(req.session.user);
 });
-
+userRouter.patch('/:userId/edit', async (req, res, next) => {
+  const { firstName, lastName, email, username, location, bio } = req.body;
+  const userExists = await User.findOne({ username: username });
+  if (userExists.username && userExists.username !== req.session.user.username) {
+    return res.status(400).send('Username already exists!');
+  }
+  const emailExists = await User.findOne({ email: email });
+  if (emailExists.email && emailExists.email !== req.session.user.email) {
+    return res.status(400).send('Email already exists!');
+  }
+  try {
+    const findUser = await User.findByIdAndUpdate(
+      req.params.userId,
+      { firstName, lastName, email, username, location, description: bio },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+    res.status(200).send(findUser);
+  } catch (Error) {
+    res.status(200).send(error);
+  }
+});
 userRouter.get('/:userId/following', async (req, res, next) => {
   User.findById(req.params.userId)
     .populate('following')

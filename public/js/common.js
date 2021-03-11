@@ -112,9 +112,9 @@ window.onload = (function () {
     });
   }
 })();
-//Delete Post MODAL
-// Delete MODAL : ON SHOW
+//Delete PIN UNPIN
 document.addEventListener('DOMContentLoaded', function () {
+  // Delete MODAL : ON SHOW
   if (document.getElementById('deletePostModal') !== null) {
     document
       .getElementById('deletePostModal')
@@ -133,9 +133,58 @@ document.addEventListener('DOMContentLoaded', function () {
         method: 'DELETE',
         url: `/api/posts/${postId}`,
       }).then(() => {
-        document.querySelector(
-          '.deletePostModal-alert'
-        ).innerHTML = `<span class='d-flex alert alert-success noResults errorMessage' role='alert'>Tweet Deleted.</span>`;
+        sendAlert('Tweet Deleted.', '.deletePostModal-alert');
+
+        setTimeout(() => {
+          location.reload();
+        }, 1000);
+      });
+    });
+  }
+  // Pin Model
+  if (document.getElementById('confirmPinModal') !== null) {
+    document
+      .getElementById('confirmPinModal')
+      .addEventListener('shown.bs.modal', (event) => {
+        event.preventDefault();
+        const button = event.relatedTarget;
+        const postId = getPostIdFromElement(button);
+
+        let submitButton = document.getElementById('pinPostButton');
+        submitButton.dataset.id = postId;
+      });
+    document.getElementById('pinPostButton').addEventListener('click', (event) => {
+      const postId = event.target.dataset.id;
+      axios({
+        method: 'PUT',
+        url: `/api/posts/${postId}`,
+        data: { pinned: true },
+      }).then(() => {
+        sendAlert('Tweet Pinned', '.createPinnedStatus');
+        setTimeout(() => {
+          location.reload();
+        }, 800);
+      });
+    });
+  }
+  // UnPin Model
+  if (document.getElementById('unpinModal') !== null) {
+    document.getElementById('unpinModal').addEventListener('shown.bs.modal', (event) => {
+      event.preventDefault();
+      const button = event.relatedTarget;
+      const postId = getPostIdFromElement(button);
+
+      let submitButton = document.getElementById('unpinPostButton');
+      submitButton.dataset.id = postId;
+    });
+    document.getElementById('unpinPostButton').addEventListener('click', (event) => {
+      const postId = event.target.dataset.id;
+      axios({
+        method: 'PUT',
+        url: `/api/posts/${postId}`,
+        data: { pinned: false },
+      }).then(() => {
+        sendAlert('Tweet unPinned.', '.createunPinnedStatus');
         setTimeout(() => {
           location.reload();
         }, 1000);
@@ -382,11 +431,11 @@ function createPostHtml(postData, largeFont = false) {
   let pinnedPostText = '';
   if (postData.postedBy._id == userLoggedIn._id) {
     let pinnedClass = '';
-    const dataTarget = '#confirmPinModal';
+    let dataTarget = '#confirmPinModal';
     if (postData.pinned === true) {
       pinnedClass = 'active';
       dataTarget = '#unpinModal';
-      pinnedPostText = "<i class='fas fa-thumbtack'></i> <span>Pinned post</span>";
+      pinnedPostText = "<i class='fas fa-thumbtack'></i> <span>  Pinned post</span>";
     }
 
     buttons = `<button class='pinButton ${pinnedClass}' data-id="${postData._id}" data-bs-toggle="modal" data-bs-target="${dataTarget}"><i class='fas fa-thumbtack'></i></button>

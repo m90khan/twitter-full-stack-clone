@@ -20,6 +20,10 @@
   color: var(--greyText);
   font-weight: 400;
 }
+.white {
+  color: var(--white);
+  font-weight: 400;
+}
 html {
   padding: 0;
   margin: 0;
@@ -113,6 +117,7 @@ nav {
 nav a {
   padding: 0rem 2rem 0 1rem;
   font-size: 1.8rem;
+  margin-bottom: 0.3rem;
   /* width: 55px; */
   height: 55px;
   display: flex;
@@ -122,7 +127,7 @@ nav a {
   position: relative;
 }
 nav a h1 {
-  margin-left: 1rem;
+  margin-left: 1.5rem;
   font-weight: 700;
 }
 @media (max-width: 700px) {
@@ -208,6 +213,12 @@ button span {
   left: 0.8rem;
   background: transparent;
 }
+@media (min-width: 567px) {
+  .modal-dialog {
+    max-width: 600px;
+  }
+}
+
 .modal-content {
   background-color: var(--black) !important;
   border-radius: 1rem;
@@ -510,7 +521,12 @@ button span {
   display: flex;
   border-bottom: 1px solid var(--greyText);
 }
-
+.user {
+  flex-direction: row;
+  display: flex;
+  padding: 1.5rem 1rem;
+  border-bottom: 2px solid var(--greyText);
+}
 .user .userDetailsContainer {
   flex: 1;
   padding: 0 var(--spacing);
@@ -572,7 +588,8 @@ button span {
 }
 
 .pinnedPostText {
-  font-size: 12px;
+  font-size: 14px;
+  font-weight: 400;
   color: var(--greyText);
 }
 
@@ -583,23 +600,29 @@ button span {
 .searchBarContainer {
   position: relative;
   color: var(--greyText);
-  padding: 10px var(--spacing);
+  padding: 1rem var(--spacing);
 }
 
 .searchBarContainer i {
   position: absolute;
-  top: 20px;
+  top: 26px;
   left: 28px;
+  color: var(--blueBackground);
 }
 
 .searchBarContainer #searchBox {
   height: 36px;
   width: 100%;
-  padding: 5px 15px 5px 40px;
-  border-radius: 50px;
-  background-color: var(--lightGrey);
+  padding: 0.4rem 1rem 0.4rem 3rem;
+  border-radius: 5rem;
+  background-color: var(--greyText);
   border: none;
-  color: var(--greyText);
+  color: var(--white);
+}
+.searchBarContainer #searchBox:focus {
+  outline: none !important;
+  background-color: var(--greyButtonText);
+  border: 2px solid var(--blue);
 }
 
 .chatPageContainer {

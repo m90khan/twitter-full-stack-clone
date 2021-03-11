@@ -67,20 +67,30 @@ function outputPinnedPost(results, container) {
 const editProfileButton = document.querySelector('#submitProfileButton');
 
 if (editProfileButton) {
-  editProfileButton.addEventListener('submit', (e) => {
+  editProfileButton.addEventListener('click', (e) => {
     e.preventDefault();
-    const form = new FormData();
-    form.append('firstName', document.getElementById('nameFirstEdit').value);
-    form.append('lastName', document.getElementById('nameLastEdit').value);
-    form.append('location', document.getElementById('locationEdit').value);
-    form.append('bio', document.getElementById('bioEdit').value);
-    console.log(form);
+    // const form = new FormData();
+    const container = document.querySelector('.editFormContainer');
+    const firstName = document.getElementById('nameFirstEdit').value;
+    const lastName = document.getElementById('nameLastEdit').value;
+    const email = document.getElementById('emailEdit').value;
+    const username = document.getElementById('usernameEdit').value;
+    const location = document.getElementById('locationEdit').value;
+    const bio = document.getElementById('bioEdit').value;
     axios({
       method: 'PATCH',
-      url: `/profile/${userLoggedIn._id}/edit`,
-      form,
-    }).then((postData) => {
-      alert('sucess');
-    });
+      url: `/api/users/${userLoggedIn._id}/edit`,
+      data: { firstName, lastName, email, username, location, bio },
+    })
+      .then((postData) => {
+        console.log(postData);
+      })
+      .catch((error) => {
+        console.log(error);
+        container.insertAdjacentHTML(
+          'afterbegin',
+          "<span class='w-100 d-flex alert alert-danger noResults errorMessage' role='alert'>Either Username or Email already exists!</span>"
+        );
+      });
   });
 }
