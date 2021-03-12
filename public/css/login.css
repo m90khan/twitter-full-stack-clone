@@ -80,6 +80,9 @@ input[type='password'] {
 input:focus {
   outline: 1px solid #0099ff !important;
 }
+input[type='submit']:focus {
+  outline: none !important;
+}
 input[type='submit'] {
   background-color: #0099ff;
   color: #fff;

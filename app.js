@@ -35,10 +35,12 @@ app.use('/posts', middleware.requireLogin, require('./routes/postRouter'));
 app.use('/profile', middleware.requireLogin, require('./routes/profileRouter'));
 app.use('/uploads', require('./routes/uploadRouter'));
 app.use('/search', middleware.requireLogin, require('./routes/searchRouter'));
+app.use('/messages', middleware.requireLogin, require('./routes/messagesRouter'));
 
 //API
 app.use('/api/posts', require('./routes/api/posts'));
 app.use('/api/users', require('./routes/api/users'));
+app.use('/api/chats', require('./routes/api/chats'));
 
 app.get('/', middleware.requireLogin, (req, res, next) => {
   const payload = {

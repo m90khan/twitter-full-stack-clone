@@ -382,6 +382,143 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 });
 
+// New Message Search Box
+// STEP1: New Message > Text Input value
+document.addEventListener('DOMContentLoaded', () => {
+  const searchBox = document.querySelector('#userSearchTextbox');
+  const createChatButton = document.querySelector('#createChatButton');
+  if (searchBox) {
+    const resultsContainer = document.querySelector('.resultsContainer');
+    searchBox.addEventListener('keydown', (event) => {
+      clearTimeout(timer);
+      const textbox = event.target;
+      let value = textbox.value;
+
+      // keyCode = 8 : delete
+      if (value == '' && (event.which == 8 || event.keyCode == 8)) {
+        // remove user from selection
+        selectedUsers.pop();
+        updateSelectedUsersHtml();
+        resultsContainer.innerHTML = '';
+
+        if (selectedUsers.length == 0) {
+          createChatButton.disabled = true;
+        }
+        return;
+      }
+
+      timer = setTimeout(() => {
+        value = value.trim();
+        if (value == '') {
+          resultsContainer.innerHTML = '';
+        } else {
+          searchUsers(value);
+        }
+      }, 1000);
+    });
+  }
+});
+// STEP2: New Message > Search Users
+const searchUsers = async (searchTerm) => {
+  const resultsContainer = document.querySelector('.resultsContainer');
+  try {
+    const { data } = await axios({
+      method: 'GET',
+      url: `/api/users`,
+      search: searchTerm,
+    });
+
+    if (data) {
+      outputSelectableUsers(data, resultsContainer);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+// STEP3: New Message > output users from GET request
+
+const outputSelectableUsers = (results, container) => {
+  container.innerHTML = '';
+
+  results.forEach((result) => {
+    if (result._id == userLoggedIn._id) {
+      return;
+    }
+
+    if (selectedUsers.some((u) => u._id == result._id)) {
+      return;
+    }
+
+    const html = createUserHtml(result, false);
+    container.insertAdjacentHTML('afterbegin', html);
+    const element = document.querySelector('.user');
+    element.addEventListener('click', (e) => {
+      e.preventDefault();
+      userSelected(result);
+    });
+  });
+  if (results.length == 0) {
+    container.insertAdjacentHTML(
+      'afterbegin',
+      "<span class='noResults'>No results found</span>"
+    );
+  }
+};
+// STEP4: New Message > add selected user to array
+
+function userSelected(user) {
+  selectedUsers.push(user);
+  const userSearchTextbox = document.querySelector('#userSearchTextbox');
+  const resultsContainer = document.querySelector('.resultsContainer');
+  const createChatButton = document.querySelector('#createChatButton');
+  updateSelectedUsersHtml();
+
+  userSearchTextbox.value = '';
+  userSearchTextbox.focus();
+  resultsContainer.innerHTML = '';
+  createChatButton.disabled = false;
+}
+// STEP5: New Message > add the selected user full name to the screeen
+
+const updateSelectedUsersHtml = () => {
+  let elements = [];
+  selectedUsers.forEach((user) => {
+    // const name = user.children[1].firstElementChild.children[0].innerHTML;
+    var name = user.firstName + ' ' + user.lastName;
+
+    const userElement = `<span class='selectedUser'>${name}</span>`;
+    elements.push(userElement);
+  });
+  const selectedUserElements = document.querySelector('.selectedUser');
+  if (selectedUserElements) {
+    document.querySelector('.selectedUser').remove();
+  }
+  const selectedUsersContainer = document.querySelector('#selectedUsers');
+  selectedUsersContainer.insertAdjacentHTML('afterbegin', elements);
+};
+
+// CHAT
+document.addEventListener('DOMContentLoaded', () => {
+  const createChatButton = document.querySelector('#createChatButton');
+
+  // Initiate Chat
+  if (createChatButton !== null) {
+    createChatButton.addEventListener('click', async () => {
+      const data = {
+        users: JSON.stringify(selectedUsers),
+      };
+
+      axios({
+        method: 'POST',
+        url: '/api/chats',
+        data,
+      }).then(({ data }) => {
+        if (!data || !data._id) return alert('Invalid response from server.');
+        window.location.href = `/messages/${data._id}`;
+      });
+    });
+  }
+});
 function createPostHtml(postData, largeFont = false) {
   if (postData == null) return alert('post object is null');
   const isRetweet = postData.retweetData !== undefined;
@@ -494,10 +631,16 @@ function createUserHtml(userData, showFollowButton) {
   const name = userData.firstName + ' ' + userData.lastName;
   const isFollowing =
     userLoggedIn.following && userLoggedIn.following.includes(userData._id);
+  const followsYou =
+    userLoggedIn.followers && userLoggedIn.followers.includes(userData._id);
   const text = isFollowing ? 'Following' : 'Follow';
-  const followText = isFollowing
-    ? "<span class='follow-you '>You Following</span>"
-    : "<span class='follow-you '>Follows You</span>";
+  let followText = isFollowing ? 'You Following' : followsYou ? 'Follows You' : '';
+  if (userLoggedIn._id == userData._id) {
+    followText = '';
+  }
+
+  const followContainer = followText && `<span class='follow-you '>${followText}</span>`;
+
   const buttonClass = isFollowing ? 'followButton following' : 'followButton';
 
   let followButton = '';
@@ -507,9 +650,7 @@ function createUserHtml(userData, showFollowButton) {
                       </div>`;
   }
 
-  console.log(followButton);
-
-  return `<div class='user'>
+  return `<div class='user' id='chatUser'>
               <div class='userImageContainer'>
                   <img src='${userData.profilePic}'>
               </div>
@@ -517,7 +658,7 @@ function createUserHtml(userData, showFollowButton) {
                   <div class='header'>
                       <a href='/profile/${userData.username}'>${name}</a>
                       <span class='username'>@${userData.username}  </span>
-                      ${followText}
+                      ${followContainer}
                   </div>
                   <p class='user-description'>${
                     userData.description ? userData.description : ''
@@ -525,4 +666,68 @@ function createUserHtml(userData, showFollowButton) {
               </div>
               ${followButton}
           </div>`;
+}
+
+function createChatHtml(chatData) {
+  const chatName = getChatName(chatData);
+  const image = getChatImageElements(chatData);
+  const latestMessage = getLatestMessage(chatData.latestMessage);
+
+  const activeClass =
+    !chatData.latestMessage || chatData.latestMessage.readBy.includes(userLoggedIn._id)
+      ? ''
+      : 'active';
+
+  return `<a href='/messages/${chatData._id}' class='resultListItem ${activeClass}'>
+                ${image}
+                <div class='resultsDetailsContainer ellipsis'>
+                    <span class='heading ellipsis'>${chatName}</span>
+                    <span class='subText ellipsis'>${latestMessage}</span>
+                </div>
+            </a>`;
+}
+
+function getChatName(chatData) {
+  let chatName = chatData.chatName;
+
+  if (!chatName) {
+    const otherChatUsers = getOtherChatUsers(chatData.users); // get all chat usrs expect loggedIn one
+    const namesArray = otherChatUsers.map((user) => user.firstName + ' ' + user.lastName);
+    chatName = namesArray.join(', ');
+  }
+
+  return chatName;
+}
+function getChatImageElements(chatData) {
+  const otherChatUsers = getOtherChatUsers(chatData.users);
+
+  let groupChatClass = '';
+  let chatImage = getUserChatImageElement(otherChatUsers[0]);
+
+  if (otherChatUsers.length > 1) {
+    groupChatClass = 'groupChatImage';
+    chatImage += getUserChatImageElement(otherChatUsers[1]);
+  }
+
+  return `<div class='resultsImageContainer ${groupChatClass}'>${chatImage}</div>`;
+}
+function getLatestMessage(latestMessage) {
+  if (latestMessage != null) {
+    const sender = latestMessage.sender;
+    return `${sender.firstName} ${sender.lastName}: ${latestMessage.content}`;
+  }
+
+  return 'New chat';
+}
+function getOtherChatUsers(users) {
+  if (users.length == 1) return users; // only loggedIn user
+
+  return users.filter((user) => user._id != userLoggedIn._id);
+}
+function getUserChatImageElement(user) {
+  if (!user || !user.profilePic) {
+    return alert('User passed into function is invalid');
+  }
+
+  return `<img src='${user.profilePic}' alt='User's profile pic'>`;
 }

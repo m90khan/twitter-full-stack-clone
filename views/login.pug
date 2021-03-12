@@ -5,10 +5,10 @@ block content
     .loginContainer
         h1 Log in to Twitter
         - if (errorMessage)
-            .alert.alert-danger.errorMessage(role='alert')= `Error: ${errorMessage}` 
+            span.w-100.d-flex.alert.alert-info.noResults.errorMessage(role='alert')= `Error: ${errorMessage}` 
         form(method="post")
-            input(type="text", name="logUsername", placeholder="Phone, email, or username", value=" " required="")
-            input(type="password", name="logPassword", placeholder="Password", value=" " required="")
+            input(type="text", name="logUsername", placeholder="Phone, email, or username", value="m90khan" required="")
+            input(type="password", name="logPassword", placeholder="Password", value="test1234" required="")
             input(type="submit", value="Login")
         p
             a(href="/register") Forgot Password? -  

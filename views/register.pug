@@ -5,7 +5,7 @@ block content
     .loginContainer
         h1 Create account
         - if (errorMessage)
-            p.errorMessage= `Error: ${errorMessage}` 
+            span.w-100.d-flex.alert.alert-info.noResults.errorMessage(role='alert')= `Error: ${errorMessage}` 
         form#registerForm(method="post", onsubmit="event.preventDefault(); validateForm();")
             input(type="text", name="firstName", placeholder="First name", value=firstName required="")
             input(type="text", name="lastName", placeholder="Last name", value=lastName required="")

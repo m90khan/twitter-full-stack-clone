@@ -57,5 +57,5 @@ const getBase64Value = (
 const sendAlert = (message, container) => {
   return (document.querySelector(
     container
-  ).innerHTML = `<span class='w-100 d-flex alert alert-success noResults errorMessage' role='alert'>${message}</span>`);
+  ).innerHTML = `<span class='w-100 d-flex alert alert-info noResults errorMessage' role='alert'>${message}</span>`);
 };

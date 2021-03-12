@@ -1,0 +1,12 @@
+extends layouts/main-layout.pug
+
+block content    
+    .resultsContainer
+
+block headerButton
+    a(href="/messages/new")
+        i.new-chat(data-feather='plus-circle')
+
+
+block scripts
+    script(src="/js/inboxPage.js")

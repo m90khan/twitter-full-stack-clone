@@ -2,7 +2,7 @@ extends layouts/main-layout.pug
 
 block content
     if !profileUser
-        span.d-flex.alert.alert-danger.noResults.errorMessage(role='alert') You are not authorized.
+        span.w-100.d-flex.alert.alert-info.noResults.errorMessage(role='alert') You are not authorized.
     else  
         script.
             const profileUserId = '!{profileUser._id}';

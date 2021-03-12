@@ -1,5 +1,5 @@
 const express = require('express');
-
+const path = require('path');
 const postsRouter = express.Router();
 const User = require('../../models/UserSchema');
 const Post = require('../../models/PostSchema');
