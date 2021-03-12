@@ -89,7 +89,7 @@ if (editProfileButton) {
         console.log(error);
         container.insertAdjacentHTML(
           'afterbegin',
-          "<span class='w-100 d-flex alert alert-danger noResults errorMessage' role='alert'>Either Username or Email already exists!</span>"
+          "<span class='w-100 d-flex alert alert-info noResults errorMessage' role='alert'>Either Username or Email already exists!</span>"
         );
       });
   });

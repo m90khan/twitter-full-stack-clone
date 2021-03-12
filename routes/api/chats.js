@@ -4,10 +4,6 @@ const User = require('../../models/UserSchema');
 const Post = require('../../models/PostSchema');
 const Chat = require('../../models/ChatSchema');
 const Message = require('../../models/MessageSchema');
-const bodyParser = require('body-parser');
-const app = express();
-
-app.use(bodyParser.urlencoded({ extended: false }));
 
 chatRouter.post('/', async (req, res, next) => {
   if (!req.body.users) {
@@ -48,7 +44,6 @@ chatRouter.get('/', async (req, res, next) => {
           (r) => r.latestMessage && !r.latestMessage.readBy.includes(req.session.user._id)
         );
       }
-
       results = await User.populate(results, { path: 'latestMessage.sender' });
       res.status(200).send(results);
     })
@@ -57,7 +52,7 @@ chatRouter.get('/', async (req, res, next) => {
       res.sendStatus(400);
     });
 });
-
+// GET chat name and populate users
 chatRouter.get('/:chatId', async (req, res, next) => {
   //findOne instead of find : to only get one element and NOT in form of  ARRAY
   Chat.findOne({
@@ -71,7 +66,7 @@ chatRouter.get('/:chatId', async (req, res, next) => {
       res.sendStatus(400);
     });
 });
-
+// Update chat id
 chatRouter.put('/:chatId', async (req, res, next) => {
   Chat.findByIdAndUpdate(req.params.chatId, req.body)
     .then((results) => res.sendStatus(204))
@@ -80,7 +75,7 @@ chatRouter.put('/:chatId', async (req, res, next) => {
       res.sendStatus(400);
     });
 });
-
+// Get chat messages
 chatRouter.get('/:chatId/messages', async (req, res, next) => {
   Message.find({ chat: req.params.chatId })
     .populate('sender')
@@ -90,7 +85,7 @@ chatRouter.get('/:chatId/messages', async (req, res, next) => {
       res.sendStatus(400);
     });
 });
-
+// Update message as read
 chatRouter.put('/:chatId/messages/markAsRead', async (req, res, next) => {
   Message.updateMany(
     { chat: req.params.chatId },

@@ -23,7 +23,7 @@ function outputChatList(chatList, container) {
   if (chatList.length == 0) {
     container.insertAdjacentHTML(
       'afterbegin',
-      "<span class='d-flex alert alert-danger noResults errorMessage' role='alert'>No Messages to show.</span>"
+      "<span class='d-flex alert alert-info noResults errorMessage' role='alert'>No Messages to show.</span>"
     );
   }
 }

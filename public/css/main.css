@@ -405,6 +405,9 @@ button span {
 
 .errorMessage {
   padding: var(--spacing);
+  color: var(--blue);
+  margin-top: 0.5rem;
+  font-weight: 500;
 }
 
 .coverPhotoSection {
@@ -766,12 +769,15 @@ button span {
   display: flex;
   align-items: center;
   padding: var(--spacing);
+  color: var(--greyText);
 }
 
 #chatName {
   width: 100%;
   border: 1px solid transparent;
   padding: 0 0.5rem;
+  color: var(--blue);
+  font-weight: 600;
 }
 
 #chatName:hover {
@@ -795,7 +801,7 @@ button span {
 .chatContainer .footer textarea {
   flex: 1;
   resize: none;
-  background-color: rgb(12, 15, 17);
+  background-color: rgb(17, 20, 22);
   border-radius: 2rem;
   border: none;
   padding: 0.6rem 0.8rem;
@@ -863,10 +869,12 @@ button span {
 
 .typingDots img,
 .chatMessages .message .messageBody {
-  background-color: #f1f0f0;
-  padding: 6px 12px;
-  border-radius: 18px;
+  background-color: rgb(26, 32, 36);
+  color: var(--white);
+  padding: 0.6rem 0.8rem;
+  border-radius: 2rem;
   font-size: 14px;
+  font-weight: 400;
 }
 
 .typingDots img {
@@ -903,7 +911,7 @@ button span {
 }
 
 .chatMessages .message.mine.first .messageBody {
-  border-bottom-right-radius: 2px;
+  border-bottom-right-radius: 3px;
 }
 
 .chatMessages .message.mine:not(.first):not(.last) .messageBody {
@@ -937,13 +945,17 @@ button span {
 }
 
 .senderName {
-  color: rgba(0, 0, 0, 0.4);
+  color: var(--greyText);
+  font-size: 10px;
+  font-weight: 400;
+  padding: 0.3rem;
 }
 
 .chatMessages .imageContainer {
   height: 24px;
   width: 24px;
-  margin-right: 7px;
+  margin-right: 0.6rem;
+  margin-bottom: 1.8rem;
 }
 
 .chatMessages img {
@@ -962,14 +974,22 @@ button span {
   justify-content: center;
   width: 100%;
 }
+.loadingSpinnerContainer .spinner-grow {
+  color: var(--blue);
+  background: var(--blue) !important;
+  margin: 0 1rem;
+}
 
 .loadingSpinnerContainer img {
-  width: 50%;
+  width: 25%;
   max-width: 75px;
 }
 
 .resultListItem.active {
-  background-color: var(--blueBackground);
+  background-color: rgb(26, 32, 36);
+}
+.resultListItem.active:hover {
+  background-color: var(--blue);
 }
 
 .resultListItem.notification * {

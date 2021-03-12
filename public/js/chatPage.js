@@ -1,16 +1,16 @@
-var typing = false;
-var lastTypingTime;
+let typing = false;
+let lastTypingTime;
 document.addEventListener('DOMContentLoaded', async () => {
-  socket.emit('join room', chatId);
-  socket.on(
-    'typing',
-    () => (document.querySelector('.typingDots').style.display = 'block')
-  );
-  socket.on(
-    'stop typing',
-    () => (document.querySelector('.typingDots').style.display = 'none')
-  );
-
+  // socket.emit('join room', chatId);
+  // socket.on(
+  //   'typing',
+  //   () => (document.querySelector('.typingDots').style.display = 'block')
+  // );
+  // socket.on(
+  //   'stop typing',
+  //   () => (document.querySelector('.typingDots').style.display = 'none')
+  // );
+  // GET chat name > chatId is parsed from pug
   try {
     const chatName = document.querySelector('#chatName');
     const { data } = await axios({
@@ -18,23 +18,23 @@ document.addEventListener('DOMContentLoaded', async () => {
       url: `/api/chats/${chatId}`,
     });
     if (data) {
-      chatName.textContent = getChatName(data);
+      chatName.innerHTML = getChatName(data);
     }
   } catch (error) {
     console.log(error);
     alert('could not update');
   }
-
+  // GET chat messages
   try {
-    const chatName = document.querySelector('#chatName');
     const { data } = await axios({
       method: 'GET',
       url: `/api/chats/${chatId}/messages`,
     });
     if (data) {
       const messages = [];
-      let lastSenderId = '';
+      let lastSenderId = ''; // id of the sender of the last message
       data.forEach((message, index) => {
+        //  data[index + 1] : to get the next message
         var html = createMessageHtml(message, data[index + 1], lastSenderId);
         messages.push(html);
 
@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       const messagesHtml = messages.join('');
       addMessagesHtmlToPage(messagesHtml);
       scrollToBottom(false);
-      markAllMessagesAsRead();
+      // markAllMessagesAsRead();
       document.querySelector('.loadingSpinnerContainer').remove();
       document.querySelector('.chatContainer').style.visibility = 'visible';
     }
@@ -52,17 +52,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     alert('could not update');
   }
 });
-
+// Change Chat Name
 const chatNameButton = document.querySelector('#chatNameButton');
 if (chatNameButton) {
   chatNameButton.addEventListener('click', async (event) => {
     const name = document.querySelector('#chatNameTextbox').value.trim();
     try {
-      const { data } = await axios({
+      const { data, status } = await axios({
         method: 'PUT',
         url: '/api/chats/' + chatId,
-        data: { chatName: name },
+        data: { chatName: name }, //chatName from schema
       });
+      console.log(data);
       location.reload();
     } catch (error) {
       console.log(error);
@@ -70,30 +71,41 @@ if (chatNameButton) {
     }
   });
 }
-
+// Send Message Button
 const sendMessageButton = document.querySelector('.sendMessageButton');
 if (sendMessageButton) {
   sendMessageButton.addEventListener('click', () => {
     messageSubmitted();
   });
 }
+// Chat textbox on Enter
 const inputTextbox = document.querySelector('.inputTextbox');
 if (inputTextbox) {
   inputTextbox.addEventListener('keydown', (event) => {
     updateTyping();
-    if (event.which === 13) {
+    if (event.which === 13 && !event.shiftKey) {
+      // shift+enter for new line
       messageSubmitted();
-      return false;
+      return false; // prevent textbox to proceed further with enter key
     }
   });
 }
-
+function messageSubmitted() {
+  let content = document.querySelector('.inputTextbox');
+  const contentValue = content.value.trim();
+  if (contentValue != '') {
+    sendMessage(contentValue);
+    content.value = '';
+    // socket.emit('stop typing', chatId);
+    typing = false;
+  }
+}
 function updateTyping() {
-  if (!connected) return;
+  // if (!connected) return;
 
   if (!typing) {
     typing = true;
-    socket.emit('typing', chatId);
+    // socket.emit('typing', chatId);
   }
 
   lastTypingTime = new Date().getTime();
@@ -104,7 +116,7 @@ function updateTyping() {
     const timeDiff = timeNow - lastTypingTime;
 
     if (timeDiff >= timerLength && typing) {
-      socket.emit('stop typing', chatId);
+      // socket.emit('stop typing', chatId);
       typing = false;
     }
   }, timerLength);
@@ -114,29 +126,17 @@ function addMessagesHtmlToPage(html) {
   const container = document.querySelector('.chatMessages');
   container.insertAdjacentHTML('beforeend', html);
 }
-
-function messageSubmitted() {
-  let content = document.querySelector('.inputTextbox');
-  content.value.trim();
-  if (content != '') {
-    sendMessage(content);
-    content.value = '';
-    socket.emit('stop typing', chatId);
-    typing = false;
-  }
-}
-
+// Send Server to Server
 const sendMessage = async (content) => {
   const textBoxContainer = document.querySelector('.inputTextbox');
   try {
-    const payload = {
-      content: content,
-      chatId: chatId,
-    };
     const { data, status } = await axios({
       method: 'POST',
       url: `/api/messages`,
-      payload,
+      data: {
+        content: content,
+        chatId: chatId,
+      },
     });
     if (status != 201) {
       alert('Could not send message');
@@ -146,9 +146,9 @@ const sendMessage = async (content) => {
     if (data) {
       addChatMessageHtml(data);
     }
-    if (connected) {
-      socket.emit('new message', data);
-    }
+    // if (connected) {
+    //   socket.emit('new message', data);
+    // }
   } catch (error) {
     console.log(error);
   }
@@ -165,7 +165,22 @@ function addChatMessageHtml(message) {
   addMessagesHtmlToPage(messageDiv);
   scrollToBottom(true);
 }
-
+function monthName(mon) {
+  return [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ][mon];
+}
 function createMessageHtml(message, nextMessage, lastSenderId) {
   const sender = message.sender;
   const senderName = sender.firstName + ' ' + sender.lastName;
@@ -173,18 +188,25 @@ function createMessageHtml(message, nextMessage, lastSenderId) {
   const currentSenderId = sender._id;
   const nextSenderId = nextMessage != null ? nextMessage.sender._id : '';
 
-  const isFirst = lastSenderId != currentSenderId;
-  const isLast = nextSenderId != currentSenderId;
+  const isFirst = lastSenderId != currentSenderId; // lastpersonSentMessage is not currentpersonSentMessage
+  const isLast = nextSenderId != currentSenderId; // nextMessageSender is not currentSender = last Message
 
-  let isMine = message.sender._id == userLoggedIn._id;
+  const isMine = message.sender._id == userLoggedIn._id;
   let liClassName = isMine ? 'mine' : 'theirs';
+
+  const time = `${monthName(new Date(message.createdAt).getUTCMonth())} ${new Date(
+    message.createdAt
+  ).getUTCDate()}, ${new Date(message.createdAt).getUTCFullYear()}, ${new Date(
+    message.createdAt
+  ).getUTCHours()}:${new Date(message.createdAt).getUTCMinutes()}`;
+
+  const timeElement = `<span class='senderName'>${time}</span>`;
 
   let nameElement = '';
   if (isFirst) {
     liClassName += ' first';
-
     if (!isMine) {
-      nameElement = `<span class='senderName'>${senderName}</span>`;
+      nameElement = `<span class='senderName'><a href='/profile/${sender.username}'>${senderName}</a></span>`;
     }
   }
 
@@ -197,38 +219,36 @@ function createMessageHtml(message, nextMessage, lastSenderId) {
   let imageContainer = '';
   if (!isMine) {
     imageContainer = `<div class='imageContainer'>
-                                ${profileImage}
+                             <a href='/profile/${sender.username}'>   ${profileImage} </a>
                             </div>`;
   }
 
   return `<li class='message ${liClassName}'>
-                ${imageContainer}
+                    ${imageContainer}
                 <div class='messageContainer'>
                     ${nameElement}
                     <span class='messageBody'>
                         ${message.content}
                     </span>
+                    ${timeElement}
+
                 </div>
-            </li>`;
+          </li>`;
 }
 
 function scrollToBottom(animated) {
   const container = document.querySelector('.chatMessages');
-  const scrollHeight = container[0].scrollHeight;
-
-  if (animated) {
-    container.animate({ scrollTop: scrollHeight }, 'slow');
-  } else {
-    container.scrollTop(scrollHeight);
-  }
+  // const scrollHeight = container[0].scrollHeight;
+  console.log(container);
+  container.scrollTop = container.scrollHeight;
 }
 
-const markAllMessagesAsRead = async () => {
-  const { data } = await axios({
-    method: 'PUT',
-    url: `/api/chats/${chatId}/messages/markAsRead`,
-  });
-  if (data) {
-    refreshMessagesBadge();
-  }
-};
+// const markAllMessagesAsRead = async () => {
+//   const { data } = await axios({
+//     method: 'PUT',
+//     url: `/api/chats/${chatId}/messages/markAsRead`,
+//   });
+//   if (data) {
+//     refreshMessagesBadge();
+//   }
+// };

@@ -146,9 +146,9 @@ postsRouter.post('/:id/retweet', async (req, res, next) => {
     res.sendStatus(400);
   });
 
-  //   if (!deletedPost) {
-  //     await Notification.insertNotification(post.postedBy, userId, 'retweet', post._id);
-  //   }
+  // if (!deletedPost) {
+  //   await Notification.insertNotification(post.postedBy, userId, 'retweet', post._id);
+  // }
 
   res.status(200).send(post);
 });
@@ -172,14 +172,14 @@ postsRouter.post('/', async (req, res, next) => {
       newPost = await User.populate(newPost, { path: 'postedBy' });
       newPost = await Post.populate(newPost, { path: 'replyTo' });
 
-      //   if (newPost.replyTo !== undefined) {
-      //     await Notification.insertNotification(
-      //       newPost.replyTo.postedBy,
-      //       req.session.user._id,
-      //       'reply',
-      //       newPost._id
-      //     );
-      //   }
+      // if (newPost.replyTo !== undefined) {
+      //   await Notification.insertNotification(
+      //     newPost.replyTo.postedBy,
+      //     req.session.user._id,
+      //     'reply',
+      //     newPost._id
+      //   );
+      // }
 
       res.status(201).send(newPost);
     })

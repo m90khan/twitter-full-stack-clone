@@ -15,7 +15,13 @@ block content
             
             .mainContentContainer
                 .loadingSpinnerContainer
-                    img(src="/images/loadingSpinner.gif", alt="Loading spinner")
+                    .spinner-grow.text-primary(role='status')
+                        span.visually-hidden Loading...
+                    .spinner-grow.text-primary(role='status')
+                        span.visually-hidden Loading...
+                    .spinner-grow.text-primary(role='status')
+                        span.visually-hidden Loading...
+                    //- img(src="/images/loadingSpinner.gif", alt="Loading spinner")
                 .chatContainer(style="visibility: hidden", data-room=chat._id)
                     ul.chatMessages
 

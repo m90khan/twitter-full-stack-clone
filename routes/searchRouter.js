@@ -1,8 +1,6 @@
 const express = require('express');
 const userRouter = express.Router();
 
-const User = require('../models/UserSchema');
-
 userRouter.get('/', (req, res, next) => {
   const payload = createPayload(req.session.user);
   res.status(200).render('searchPage', payload);

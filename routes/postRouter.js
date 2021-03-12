@@ -1,7 +1,5 @@
 const express = require('express');
 const postRouter = express.Router();
-const bcrypt = require('bcrypt');
-const User = require('../models/UserSchema');
 
 postRouter.get('/:id', (req, res, next) => {
   const payload = {

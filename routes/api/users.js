@@ -6,7 +6,7 @@ const sharp = require('sharp');
 const fs = require('fs');
 const User = require('../../models/UserSchema');
 const Post = require('../../models/PostSchema');
-// const Notification = require('../../models/NotificationSchema');
+const Notification = require('../../models/NotificationSchema');
 const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
 const { Cloudinary } = require('../../utils/cloudinary');
@@ -60,14 +60,14 @@ userRouter.put('/:userId/follow', async (req, res, next) => {
     }
   );
 
-  //   if (!isFollowing) {
-  //     await Notification.insertNotification(
-  //       userId,
-  //       req.session.user._id,
-  //       'follow',
-  //       req.session.user._id
-  //     );
-  //   }
+  // if (!isFollowing) {
+  //   await Notification.insertNotification(
+  //     userId,
+  //     req.session.user._id,
+  //     'follow',
+  //     req.session.user._id
+  //   );
+  // }
 
   res.status(200).send(req.session.user);
 });

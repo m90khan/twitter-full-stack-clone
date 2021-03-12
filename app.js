@@ -41,6 +41,7 @@ app.use('/messages', middleware.requireLogin, require('./routes/messagesRouter')
 app.use('/api/posts', require('./routes/api/posts'));
 app.use('/api/users', require('./routes/api/users'));
 app.use('/api/chats', require('./routes/api/chats'));
+app.use('/api/messages', require('./routes/api/messages'));
 
 app.get('/', middleware.requireLogin, (req, res, next) => {
   const payload = {

@@ -3,9 +3,6 @@ const app = express();
 const User = require('./../models/UserSchema');
 
 const loginRouter = express.Router();
-// app.set('view engine', 'pug');
-// app.set('views', 'views');
-// app.use(express.urlencoded({ extended: false }));
 
 loginRouter.get('/', (req, res, next) => {
   const payload = {
