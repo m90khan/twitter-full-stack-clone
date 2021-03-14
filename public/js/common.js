@@ -9,34 +9,37 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 // POST & REPLY BUTTONS - KEYUP
-window.onload = (function () {
-  [
-    document.querySelector('#postTextarea'),
-    document.querySelector('#replyTextarea'),
-  ].forEach((item) => {
-    if (item !== null) {
-      item.addEventListener('keyup', function (event) {
-        const textbox = event.target;
-        const value = textbox.value.trim();
-        // replay
-        const isModal = textbox.closest('.modal');
+document.addEventListener('DOMContentLoaded', function () {
+  (function () {
+    [
+      document.querySelector('#postTextarea'),
+      document.querySelector('#replyTextarea'),
+    ].forEach((item) => {
+      if (item !== null) {
+        item.addEventListener('keyup', function (event) {
+          const textbox = event.target;
+          const value = textbox.value.trim();
+          // replay
+          const isModal = textbox.closest('.modal');
 
-        const submitButton = isModal
-          ? document.querySelector('#submitReplyButton')
-          : document.querySelector('#submitPostButton');
-        // submit
+          const submitButton = isModal
+            ? document.querySelector('#submitReplyButton')
+            : document.querySelector('#submitPostButton');
+          // submit
 
-        if (submitButton.length == 0) return alert('No submit button found');
+          if (submitButton.length == 0) return alert('No submit button found');
 
-        if (value == '') {
-          submitButton.disabled = true;
-          return;
-        }
-        submitButton.disabled = false;
-      });
-    }
-  });
-})();
+          if (value == '') {
+            submitButton.disabled = true;
+            return;
+          }
+          submitButton.disabled = false;
+        });
+      }
+    });
+  })();
+});
+
 // POST & REPLY BUTTONS - ON CLICK
 document.addEventListener('DOMContentLoaded', function () {
   (function () {
@@ -68,7 +71,7 @@ document.addEventListener('DOMContentLoaded', function () {
             data,
           }).then((postData) => {
             if (postData.replyTo) {
-              // emitNotification(postData.replyTo.postedBy);
+              emitNotification(postData.replyTo.postedBy);
               location.reload();
             } else {
               const html = createPostHtml(postData.data);
@@ -85,33 +88,34 @@ document.addEventListener('DOMContentLoaded', function () {
   })();
 });
 // REPLY MODAL : ON SHOW
-window.onload = (function () {
-  if (document.getElementById('replyModal') !== null) {
-    document.getElementById('replyModal').addEventListener('shown.bs.modal', (event) => {
-      event.stopPropagation();
-      event.preventDefault();
-      const button = event.relatedTarget;
-      const postId = getPostIdFromElement(button);
+const replyModal = document.getElementById('replyModal');
 
-      const replyInput = document.getElementById('replyTextarea');
-      replyInput.focus();
-      const originalPostContainer = document.getElementById('originalPostContainer');
-      let submitButton = document.getElementById('submitReplyButton');
-      submitButton.dataset.id = postId;
-      axios({
-        method: 'GET',
-        url: `/api/posts/${postId}`,
-      }).then(({ data }) => {
-        outputPosts(data.postData, originalPostContainer);
-      });
+if (replyModal) {
+  document.getElementById('replyModal').addEventListener('shown.bs.modal', (event) => {
+    event.stopPropagation();
+    event.preventDefault();
+    const button = event.relatedTarget;
+    const postId = getPostIdFromElement(button);
+
+    const replyInput = document.getElementById('replyTextarea');
+    replyInput.focus();
+    const originalPostContainer = document.getElementById('originalPostContainer');
+    let submitButton = document.getElementById('submitReplyButton');
+    submitButton.dataset.id = postId;
+    axios({
+      method: 'GET',
+      url: `/api/posts/${postId}`,
+    }).then(({ data }) => {
+      outputPosts(data.postData, originalPostContainer);
     });
-    // REPLY MODAL : REMOVE FETCHED HTML
-    document.getElementById('replyModal').addEventListener('hidden.bs.modal', (event) => {
-      const originalPostContainer = document.getElementById('originalPostContainer');
-      originalPostContainer.innerHTML = '';
-    });
-  }
-})();
+  });
+  // REPLY MODAL : REMOVE FETCHED HTML
+  document.getElementById('replyModal').addEventListener('hidden.bs.modal', (event) => {
+    const originalPostContainer = document.getElementById('originalPostContainer');
+    originalPostContainer.innerHTML = '';
+  });
+}
+
 //Delete PIN UNPIN
 document.addEventListener('DOMContentLoaded', function () {
   // Delete MODAL : ON SHOW
@@ -212,7 +216,7 @@ document.addEventListener('click', (event) => {
 
       if (data.likes.includes(userLoggedIn._id)) {
         button.classList.add('active');
-        // emitNotification(postData.postedBy);
+        emitNotification(postData.postedBy);
       } else {
         button.classList.remove('active');
       }
@@ -234,7 +238,7 @@ document.addEventListener('click', (event) => {
 
       if (data.retweetUsers.includes(userLoggedIn._id)) {
         button.classList.add('active');
-        // emitNotification(postData.postedBy);
+        emitNotification(postData.postedBy);
       } else {
         button.classList.remove('active');
       }
@@ -261,6 +265,7 @@ document.addEventListener('click', (event) => {
       if (data.following && data.following.includes(userId)) {
         button.textContent = 'Following';
         button.classList.add('following');
+        emitNotification(userId);
       } else {
         button.textContent = 'Follow';
         button.classList.remove('following');
@@ -728,20 +733,25 @@ function getUserChatImageElement(user) {
   if (!user || !user.profilePic) {
     return alert('User passed into function is invalid');
   }
-
   return `<img src='${user.profilePic}' alt='User's profile pic'>`;
 }
 
+// TOPIC STUCK HERE
 function messageReceived(newMessage) {
-  if (document.querySelector(`.chatContainer`).length == 0) {
-    // if (document.querySelector(`[data-room="${newMessage.chat._id}"]`).length == 0) {
-    // Show popup notification
-    //   showMessagePopup(newMessage);
-  } else {
-    addChatMessageHtml(newMessage);
-    // }
-    // refreshMessagesBadge();
-  }
+  const chatContainer = document.querySelector(`[data-room="${newMessage.chat._id}"]`);
+  const newchatContainer = document.querySelector(`.chatContainer`);
+  console.log(chatContainer);
+  console.log(newchatContainer);
+  console.log(newMessage);
+  // if (chatId !== newMessage.chat._id && newMessage.chat._id.length == 0) {
+  //   // if (document.querySelector(`.chatContainer`)) {
+  //   // if (document.querySelector('chatContainer').dataset.room.length == 0) {
+  //   // Show popup notification
+  //   showMessagePopup(newMessage);
+  // } else {
+  //   addChatMessageHtml(newMessage);
+  // }
+  refreshMessagesBadge();
 }
 
 // NOTIFICATION
@@ -813,7 +823,6 @@ const getNotificationUrl = (notification) => {
   return url;
 };
 // Notification click handler
-
 document.addEventListener('click', (event) => {
   let notificationContainer = event.target;
   event.stopPropagation();
@@ -843,11 +852,11 @@ const markNotificationsAsOpened = (notificationId = null, callback = null) => {
     callback();
   });
 };
+
 //BADGES
 // Refresh Messages Badge
 const refreshMessagesBadge = () => {
   const messagesBadge = document.querySelector('#messagesBadge');
-  console.log(messagesBadge);
   axios({
     method: 'GET',
     url: '/api/chats',
@@ -874,11 +883,33 @@ const refreshNotificationsBadge = () => {
   }).then(({ data }) => {
     const numResults = data.length;
     if (numResults > 0) {
-      messagesBadge.innerHTML = numResults;
+      messagesBadge.textContent = numResults;
       messagesBadge.classList.add('active');
     } else {
-      messagesBadge.innerHTML = '';
+      messagesBadge.textContent = '';
       messagesBadge.classList.remove('active');
     }
   });
 };
+
+//TOPIC STUCK HERE
+//POPUPS
+
+const showNotificationPopup = (data) => {
+  const html = createNotificationHtml(data);
+
+  console.log(html);
+  // var element = $(html);
+  // element.hide().prependTo('#notificationList').slideDown('fast');
+  document.querySelector('#notificationList').insertAdjacentHTML('afterbegin', html);
+  // setTimeout(() => element.fadeOut(400), 5000);
+};
+
+function showMessagePopup(data) {
+  if (!data.chat.latestMessage._id) {
+    data.chat.latestMessage = data;
+  }
+
+  const html = createChatHtml(data.chat);
+  document.querySelector('#notificationList').insertAdjacentHTML('afterbegin', html);
+}

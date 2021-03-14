@@ -139,6 +139,7 @@ nav a h1 {
     padding: 0.5rem;
     background-color: var(--blue);
     border-radius: 50%;
+    width: 70%;
   }
 }
 nav a.blue {
@@ -716,11 +717,52 @@ button span {
 }
 
 .resultsDetailsContainer .subText {
-  color: var(--greyText);
+  color: var(--white);
+  opacity: 0.6;
   font-size: 14px;
   font-weight: 400;
 }
+/* Acoount Button */
+.resultListItem.account {
+  border-bottom: none;
+  position: relative;
+  top: 4rem;
+}
 
+.resultListItem.account .account-icon {
+  color: var(--greyText);
+}
+.resultsDetailsContainer.account span {
+  color: var(--white);
+  font-weight: 600;
+  font-size: 1.2rem;
+  border: none;
+}
+.resultsDetailsContainer.account span:nth-child(2) {
+  color: var(--greyText);
+  font-weight: 600;
+  font-size: 1rem;
+  border: none;
+}
+@media (max-width: 687px) {
+  .resultsDetailsContainer.account span,
+  .resultListItem.account .account-icon {
+    display: none;
+  }
+  .resultListItem.account {
+    padding: 0;
+    width: 100%;
+  }
+  .resultListItem.account {
+  }
+  .resultListItem.account .resultsImageContainer {
+    margin: 0;
+    width: 100%;
+
+    height: 100%;
+  }
+}
+/* Account Button ends*/
 .resultListItem img {
   height: 100%;
   width: 100%;

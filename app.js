@@ -41,7 +41,7 @@ app.use(
   middleware.requireLogin,
   require('./routes/notificationRouter')
 );
-
+app.use('/bookmarks', middleware.requireLogin, require('./routes/bookmarkRouter'));
 //API
 app.use('/api/posts', require('./routes/api/posts'));
 app.use('/api/users', require('./routes/api/users'));

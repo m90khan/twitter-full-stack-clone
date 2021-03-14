@@ -62,7 +62,13 @@ html(lang="en")
                     a.tweet-btn.tweet-btn--large(href="")
                         i.send-icon(data-feather='send')
                         h1 Tweet
-     
+                    a.resultListItem.account.tweet-btn--large(href="")
+                        .resultsImageContainer.account
+                            img(src=`${userLoggedIn.profilePic}`)
+                        .resultsDetailsContainer.account.ellipsis
+                            span= `${userLoggedIn.firstName}`
+                            span= `@${userLoggedIn.username}`
+                        i(data-feather='more-horizontal').account-icon
                 .mainSectionContainer.col-10.col-lg-5.col-md-8.col-sm-10.col-xs-9
                     .titleContainer
                         h1 #{pageTitle}
@@ -72,6 +78,7 @@ html(lang="en")
 
                 .d-none.d-lg-none.d-md-none.d-sm-none.d-xs-none.col-md-1.col-lg-2
         #notificationList
+
         script(src='https://kit.fontawesome.com/85404227e2.js' crossorigin='anonymous')
         script(src='https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js')
         script(src='https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.min.js')

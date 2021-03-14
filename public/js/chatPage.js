@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       const messagesHtml = messages.join('');
       addMessagesHtmlToPage(messagesHtml);
       scrollToBottom(false);
-      // markAllMessagesAsRead();
+      markAllMessagesAsRead();
       document.querySelector('.loadingSpinnerContainer').remove();
       document.querySelector('.chatContainer').style.visibility = 'visible';
     }
@@ -243,12 +243,12 @@ function scrollToBottom(animated) {
   container.scrollTop = container.scrollHeight;
 }
 
-// const markAllMessagesAsRead = async () => {
-//   const { data } = await axios({
-//     method: 'PUT',
-//     url: `/api/chats/${chatId}/messages/markAsRead`,
-//   });
-//   if (data) {
-//     refreshMessagesBadge();
-//   }
-// };
+const markAllMessagesAsRead = async () => {
+  const { data } = await axios({
+    method: 'PUT',
+    url: `/api/chats/${chatId}/messages/markAsRead`,
+  });
+  if (data) {
+    refreshMessagesBadge();
+  }
+};
