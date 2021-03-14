@@ -13,8 +13,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   } catch (error) {
     console.log(error);
   }
-
-  markNotificationsAsRead.addEventListener('click', (event) => {
-    markNotificationsAsOpened();
-  });
+  // Marked all notification as read
+  if (markNotificationsAsRead) {
+    markNotificationsAsRead.addEventListener('click', (event) => {
+      markNotificationsAsOpened();
+    });
+  }
 });
