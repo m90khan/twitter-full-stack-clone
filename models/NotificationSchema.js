@@ -8,10 +8,11 @@ const NotificationSchema = new Schema(
     notificationType: String,
     opened: { type: Boolean, default: false },
     entityId: Schema.Types.ObjectId,
+    // Notifications can be many things : so entity id not referencing but restrict to mongo ID
   },
   { timestamps: true }
 );
-
+// Common method / static
 NotificationSchema.statics.insertNotification = async (
   userTo,
   userFrom,

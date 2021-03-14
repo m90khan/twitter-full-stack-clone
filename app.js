@@ -36,12 +36,18 @@ app.use('/profile', middleware.requireLogin, require('./routes/profileRouter'));
 app.use('/uploads', require('./routes/uploadRouter'));
 app.use('/search', middleware.requireLogin, require('./routes/searchRouter'));
 app.use('/messages', middleware.requireLogin, require('./routes/messagesRouter'));
+app.use(
+  '/notifications',
+  middleware.requireLogin,
+  require('./routes/notificationRouter')
+);
 
 //API
 app.use('/api/posts', require('./routes/api/posts'));
 app.use('/api/users', require('./routes/api/users'));
 app.use('/api/chats', require('./routes/api/chats'));
 app.use('/api/messages', require('./routes/api/messages'));
+app.use('/api/notifications', require('./routes/api/notifications'));
 
 app.get('/', middleware.requireLogin, (req, res, next) => {
   const payload = {

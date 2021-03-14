@@ -39,6 +39,7 @@ chatRouter.get('/', async (req, res, next) => {
     .populate('latestMessage')
     .sort({ updatedAt: -1 }) // sort by  descending order
     .then(async (results) => {
+      // filter unread chats
       if (req.query.unreadOnly !== undefined && req.query.unreadOnly == 'true') {
         results = results.filter(
           (r) => r.latestMessage && !r.latestMessage.readBy.includes(req.session.user._id)

@@ -4,8 +4,8 @@ let timer;
 let selectedUsers = [];
 
 document.addEventListener('DOMContentLoaded', function () {
-  // refreshMessagesBadge();
-  // refreshNotificationsBadge();
+  refreshMessagesBadge();
+  refreshNotificationsBadge();
 });
 
 // POST & REPLY BUTTONS - KEYUP
@@ -731,3 +731,154 @@ function getUserChatImageElement(user) {
 
   return `<img src='${user.profilePic}' alt='User's profile pic'>`;
 }
+
+function messageReceived(newMessage) {
+  if (document.querySelector(`.chatContainer`).length == 0) {
+    // if (document.querySelector(`[data-room="${newMessage.chat._id}"]`).length == 0) {
+    // Show popup notification
+    //   showMessagePopup(newMessage);
+  } else {
+    addChatMessageHtml(newMessage);
+    // }
+    // refreshMessagesBadge();
+  }
+}
+
+// NOTIFICATION
+
+const outputNotificationList = (notifications, container) => {
+  notifications.forEach((notification) => {
+    const html = createNotificationHtml(notification);
+    container.insertAdjacentHTML('afterbegin', html);
+  });
+
+  if (notifications.length == 0) {
+    sendAlert('No Notification!', container);
+  }
+};
+
+function createNotificationHtml(notification) {
+  const userFrom = notification.userFrom;
+  const text = getNotificationText(notification);
+  const href = getNotificationUrl(notification);
+  const className = notification.opened ? '' : 'active';
+
+  return `<a href='${href}' class='resultListItem notification ${className}' data-id='${notification._id}'>
+                <div class='resultsImageContainer'>
+                    <img src='${userFrom.profilePic}'>
+                </div>
+                <div class='resultsDetailsContainer ellipsis'>
+                    <span class='ellipsis text-white'>${text}</span>
+                </div>
+            </a>`;
+}
+
+const getNotificationText = (notification) => {
+  const userFrom = notification.userFrom;
+
+  if (!userFrom.firstName || !userFrom.lastName) {
+    return alert('user from data not populated');
+  }
+
+  const userFromName = `${userFrom.firstName} ${userFrom.lastName}`;
+
+  let text;
+
+  if (notification.notificationType == 'retweet') {
+    text = `${userFromName} retweeted one of your posts`;
+  } else if (notification.notificationType == 'postLike') {
+    text = `${userFromName} liked one of your posts`;
+  } else if (notification.notificationType == 'reply') {
+    text = `${userFromName} replied to one of your posts`;
+  } else if (notification.notificationType == 'follow') {
+    text = `${userFromName} followed you`;
+  }
+
+  return `<span class='ellipsis'>${text}</span>`;
+};
+
+const getNotificationUrl = (notification) => {
+  let url = '#';
+
+  if (
+    notification.notificationType == 'retweet' ||
+    notification.notificationType == 'postLike' ||
+    notification.notificationType == 'reply'
+  ) {
+    url = `/posts/${notification.entityId}`;
+  } else if (notification.notificationType == 'follow') {
+    url = `/profile/${notification.entityId}`;
+  }
+
+  return url;
+};
+// Notification click handler
+
+document.addEventListener('click', (event) => {
+  let notificationContainer = event.target;
+  event.stopPropagation();
+  if (
+    notificationContainer.classList.contains('active') &&
+    notificationContainer.classList.contains('notification')
+  ) {
+    const notificationId = notificationContainer.dataset.id;
+    const href = notificationContainer.getAttribute('href');
+    event.preventDefault();
+    const callback = () => (window.location = href);
+    markNotificationsAsOpened(notificationId, callback);
+  }
+});
+
+const markNotificationsAsOpened = (notificationId = null, callback = null) => {
+  if (callback == null) callback = () => location.reload();
+  const url =
+    notificationId != null
+      ? `/api/notifications/${notificationId}/markAsOpened` // marked single as nulled
+      : `/api/notifications/markAsOpened`;
+
+  axios({
+    method: 'PUT',
+    url: url,
+  }).then(() => {
+    callback();
+  });
+};
+//BADGES
+// Refresh Messages Badge
+const refreshMessagesBadge = () => {
+  const messagesBadge = document.querySelector('#messagesBadge');
+  console.log(messagesBadge);
+  axios({
+    method: 'GET',
+    url: '/api/chats',
+    unreadOnly: true,
+  }).then(({ data }) => {
+    const numResults = data.length;
+    if (numResults > 0) {
+      messagesBadge.innerHTML = numResults;
+      messagesBadge.classList.add('active');
+    } else {
+      messagesBadge.innerHTML = '';
+      messagesBadge.classList.remove('active');
+    }
+  });
+};
+
+// Refresh Messages Badge
+const refreshNotificationsBadge = () => {
+  const messagesBadge = document.querySelector('#notificationBadge');
+  axios({
+    method: 'GET',
+    url: '/api/notifications',
+    unreadOnly: true,
+  }).then(({ data }) => {
+    const numResults = data.length;
+    if (numResults > 0) {
+      messagesBadge.innerHTML = numResults;
+      messagesBadge.classList.add('active');
+    } else {
+      messagesBadge.innerHTML = '';
+      messagesBadge.classList.remove('active');
+    }
+  });
+};

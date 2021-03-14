@@ -878,7 +878,7 @@ button span {
 }
 
 .typingDots img {
-  height: 35px;
+  height: 3rem;
 }
 
 .typingDots {
@@ -986,7 +986,7 @@ button span {
 }
 
 .resultListItem.active {
-  background-color: rgb(26, 32, 36);
+  background-color: var(--greyText);
 }
 .resultListItem.active:hover {
   background-color: var(--blue);
@@ -999,14 +999,15 @@ button span {
 #notificationBadge,
 #messagesBadge {
   background-color: var(--red);
-  height: 25px;
-  width: 25px;
+  height: 1.3rem;
+  width: 1.3rem;
   border-radius: 50%;
   position: absolute;
-  top: 0;
-  right: 0;
+  top: 4px;
+  left: 2px;
   color: white;
-  font-size: 18px;
+  font-size: 0.8rem;
+  font-weight: 500;
   display: flex;
   align-items: center;
   justify-content: center;

@@ -60,14 +60,14 @@ userRouter.put('/:userId/follow', async (req, res, next) => {
     }
   );
 
-  // if (!isFollowing) {
-  //   await Notification.insertNotification(
-  //     userId,
-  //     req.session.user._id,
-  //     'follow',
-  //     req.session.user._id
-  //   );
-  // }
+  if (!isFollowing) {
+    await Notification.insertNotification(
+      userId, // userTo
+      req.session.user._id, // userFrom
+      'follow', // Notification Type
+      req.session.user._id // entity Id
+    );
+  }
 
   res.status(200).send(req.session.user);
 });

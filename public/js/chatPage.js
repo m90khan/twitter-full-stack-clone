@@ -1,15 +1,15 @@
 let typing = false;
 let lastTypingTime;
 document.addEventListener('DOMContentLoaded', async () => {
-  // socket.emit('join room', chatId);
-  // socket.on(
-  //   'typing',
-  //   () => (document.querySelector('.typingDots').style.display = 'block')
-  // );
-  // socket.on(
-  //   'stop typing',
-  //   () => (document.querySelector('.typingDots').style.display = 'none')
-  // );
+  socket.emit('join room', chatId);
+  socket.on(
+    'typing',
+    () => (document.querySelector('.typingDots').style.display = 'block')
+  );
+  socket.on(
+    'stop typing',
+    () => (document.querySelector('.typingDots').style.display = 'none')
+  );
   // GET chat name > chatId is parsed from pug
   try {
     const chatName = document.querySelector('#chatName');
@@ -96,27 +96,27 @@ function messageSubmitted() {
   if (contentValue != '') {
     sendMessage(contentValue);
     content.value = '';
-    // socket.emit('stop typing', chatId);
+    socket.emit('stop typing', chatId);
     typing = false;
   }
 }
 function updateTyping() {
-  // if (!connected) return;
+  if (!connected) return;
 
   if (!typing) {
     typing = true;
-    // socket.emit('typing', chatId);
+    socket.emit('typing', chatId);
   }
 
   lastTypingTime = new Date().getTime();
   const timerLength = 3000;
-
+  //run after 3 seconds
   setTimeout(() => {
     const timeNow = new Date().getTime();
     const timeDiff = timeNow - lastTypingTime;
 
     if (timeDiff >= timerLength && typing) {
-      // socket.emit('stop typing', chatId);
+      socket.emit('stop typing', chatId);
       typing = false;
     }
   }, timerLength);
@@ -146,9 +146,9 @@ const sendMessage = async (content) => {
     if (data) {
       addChatMessageHtml(data);
     }
-    // if (connected) {
-    //   socket.emit('new message', data);
-    // }
+    if (connected) {
+      socket.emit('new message', data);
+    }
   } catch (error) {
     console.log(error);
   }
