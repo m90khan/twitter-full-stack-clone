@@ -3,7 +3,7 @@ extends layouts/login-layout.pug
 block content
     img.logo(src='/images/login/logo.svg')
     .loginContainer
-        h1 Log in to Twitter
+        h1 Log in to NotTwitter
         - if (errorMessage)
             span.w-100.d-flex.alert.alert-info.noResults.errorMessage(role='alert')= `Error: ${errorMessage}` 
         form(method="post")
