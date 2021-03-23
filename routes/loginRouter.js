@@ -3,7 +3,7 @@ const app = express();
 const User = require('./../models/UserSchema');
 
 const loginRouter = express.Router();
-
+// Login Page
 loginRouter.get('/', (req, res, next) => {
   const payload = {
     pageTitle: 'Login on Nottwitter',
@@ -11,6 +11,16 @@ loginRouter.get('/', (req, res, next) => {
   };
   res.status(200).render('login', payload);
 });
+// Not login Home Page
+
+loginRouter.get('/home', (req, res, next) => {
+  const payload = {
+    pageTitle: `Nottwitter. it's what's not happening | Nottwitter`,
+    errorMessage: null,
+  };
+  res.status(200).render('homeNotLogged', payload);
+});
+
 loginRouter.post('/', async (req, res, next) => {
   const payload = {};
   const { logUsername, logPassword } = req.body;

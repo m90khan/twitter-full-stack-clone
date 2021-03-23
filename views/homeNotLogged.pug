@@ -1,0 +1,15 @@
+extends layouts/login-layout.pug
+block style 
+    link(rel="stylesheet", href="/css/login-home.css")
+block content
+    .homeContainer
+        .homeContainer-overview
+            img(src='/images/home.png')
+        .homeContainer-content
+            img(src='/images/login/logo.svg')
+            h2.text-white Not Happening now
+            .homeContainer-content-buttons
+                a.tweet-btn.tweet-btn--large( href='/register') Sign up
+                a.tweet-btn.tweet-btn--large.tweet-btn--light( href='/login') Login
+
+    p About Help Center Terms of Service Privacy Policy Cookie Policy Marketing Notwtitter for Business  2021 NotTwitter, Inc.

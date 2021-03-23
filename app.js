@@ -34,6 +34,7 @@ if (process.env.NODE_ENV !== 'development') {
 // Routes
 app.use('/login', require('./routes/loginRouter'));
 app.use('/register', require('./routes/registerRouter'));
+
 app.use(middleware.requireLogin);
 app.use('/logout', require('./routes/logoutRouter'));
 app.use('/posts', require('./routes/postRouter'));
@@ -53,8 +54,7 @@ app.use('/api/users', require('./routes/api/users'));
 app.use('/api/chats', require('./routes/api/chats'));
 app.use('/api/messages', require('./routes/api/messages'));
 app.use('/api/notifications', require('./routes/api/notifications'));
-
-app.get('/', (req, res, next) => {
+app.get('/', middleware.requireLogin, (req, res, next) => {
   const payload = {
     pageTitle: 'Home',
     userLoggedIn: req.session.user,
@@ -63,5 +63,4 @@ app.get('/', (req, res, next) => {
   };
   res.status(200).render('home', payload);
 });
-
 module.exports = app;
