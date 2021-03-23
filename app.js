@@ -34,15 +34,16 @@ if (process.env.NODE_ENV !== 'development') {
 // Routes
 app.use('/login', require('./routes/loginRouter'));
 app.use('/register', require('./routes/registerRouter'));
+app.use(middleware.requireLogin);
 app.use('/logout', require('./routes/logoutRouter'));
-app.use('/posts', middleware.requireLogin, require('./routes/postRouter'));
-app.use('/profile', middleware.requireLogin, require('./routes/profileRouter'));
+app.use('/posts', require('./routes/postRouter'));
+app.use('/profile', require('./routes/profileRouter'));
 app.use('/uploads', require('./routes/uploadRouter'));
-app.use('/search', middleware.requireLogin, require('./routes/searchRouter'));
-app.use('/messages', middleware.requireLogin, require('./routes/messagesRouter'));
+app.use('/search', require('./routes/searchRouter'));
+app.use('/messages', require('./routes/messagesRouter'));
 app.use(
   '/notifications',
-  middleware.requireLogin,
+
   require('./routes/notificationRouter')
 );
 app.use('/bookmarks', require('./routes/bookmarkRouter'));
@@ -53,7 +54,7 @@ app.use('/api/chats', require('./routes/api/chats'));
 app.use('/api/messages', require('./routes/api/messages'));
 app.use('/api/notifications', require('./routes/api/notifications'));
 
-app.get('/', middleware.requireLogin, (req, res, next) => {
+app.get('/', (req, res, next) => {
   const payload = {
     pageTitle: 'Home',
     userLoggedIn: req.session.user,
