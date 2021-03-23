@@ -6,7 +6,6 @@ let selectedUsers = [];
 document.addEventListener('DOMContentLoaded', function () {
   refreshMessagesBadge();
   refreshNotificationsBadge();
-  twemoji.parse(document.body);
 });
 
 // POST & REPLY BUTTONS - KEYUP
@@ -15,7 +14,6 @@ document.addEventListener('DOMContentLoaded', function () {
     [
       document.querySelector('#postTextarea'),
       document.querySelector('#replyTextarea'),
-      document.querySelector('#tweetTextarea'),
     ].forEach((item) => {
       if (item !== null) {
         item.addEventListener('keyup', function (event) {
