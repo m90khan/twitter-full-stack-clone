@@ -6,6 +6,7 @@ let selectedUsers = [];
 document.addEventListener('DOMContentLoaded', function () {
   refreshMessagesBadge();
   refreshNotificationsBadge();
+  twemoji.parse(document.body);
 });
 
 // POST & REPLY BUTTONS - KEYUP
@@ -14,6 +15,7 @@ document.addEventListener('DOMContentLoaded', function () {
     [
       document.querySelector('#postTextarea'),
       document.querySelector('#replyTextarea'),
+      document.querySelector('#tweetTextarea'),
     ].forEach((item) => {
       if (item !== null) {
         item.addEventListener('keyup', function (event) {
@@ -70,8 +72,8 @@ document.addEventListener('DOMContentLoaded', function () {
             url: '/api/posts',
             data,
           }).then((postData) => {
-            if (postData.replyTo) {
-              emitNotification(postData.replyTo.postedBy);
+            if (postData.data.replyTo) {
+              emitNotification(postData.data.replyTo.postedBy);
               location.reload();
             } else {
               const html = createPostHtml(postData.data);
@@ -87,6 +89,35 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   })();
 });
+//  Menu Item Tweet Btn
+
+// const tweetModal = document.getElementById('tweetModal');
+
+// if (tweetModal) {
+//   document.getElementById('tweetModal').addEventListener('shown.bs.modal', (event) => {
+//     event.stopPropagation();
+//     event.preventDefault();
+//     const button = event.relatedTarget;
+//     const textbox = document.querySelector('#tweetTextarea');
+//     // submit
+//     const data = {
+//       content: textbox.value,
+//     };
+
+//     axios({
+//       method: 'POST',
+//       url: '/api/posts',
+//       data,
+//     }).then((postData) => {
+//       const html = createPostHtml(postData.data);
+//       document.querySelector('.postsContainer').insertAdjacentHTML('afterbegin', html);
+//       textbox.value = '';
+//       button.disabled = true;
+//       location.reload();
+//     });
+//   });
+// }
+
 // REPLY MODAL : ON SHOW
 const replyModal = document.getElementById('replyModal');
 
@@ -213,10 +244,9 @@ document.addEventListener('click', (event) => {
       data.likes.length
         ? (button.children[1].textContent = data.likes.length)
         : (button.children[1].innerHTML = '');
-
       if (data.likes.includes(userLoggedIn._id)) {
         button.classList.add('active');
-        emitNotification(postData.postedBy);
+        emitNotification(data.postedBy);
       } else {
         button.classList.remove('active');
       }
@@ -238,7 +268,7 @@ document.addEventListener('click', (event) => {
 
       if (data.retweetUsers.includes(userLoggedIn._id)) {
         button.classList.add('active');
-        emitNotification(postData.postedBy);
+        emitNotification(data.postedBy);
       } else {
         button.classList.remove('active');
       }
@@ -430,7 +460,9 @@ const searchUsers = async (searchTerm) => {
     const { data } = await axios({
       method: 'GET',
       url: `/api/users`,
-      search: searchTerm,
+      params: {
+        search: searchTerm,
+      },
     });
 
     if (data) {
@@ -738,19 +770,14 @@ function getUserChatImageElement(user) {
 
 // TOPIC STUCK HERE
 function messageReceived(newMessage) {
-  const chatContainer = document.querySelector(`[data-room="${newMessage.chat._id}"]`);
-  const newchatContainer = document.querySelector(`.chatContainer`);
-  console.log(chatContainer);
-  console.log(newchatContainer);
-  console.log(newMessage);
-  // if (chatId !== newMessage.chat._id && newMessage.chat._id.length == 0) {
-  //   // if (document.querySelector(`.chatContainer`)) {
-  //   // if (document.querySelector('chatContainer').dataset.room.length == 0) {
-  //   // Show popup notification
-  //   showMessagePopup(newMessage);
-  // } else {
-  //   addChatMessageHtml(newMessage);
-  // }
+  const chatContainer = document.querySelector('.chatContainer');
+
+  if (!chatContainer) {
+    showMessagePopup(newMessage);
+  }
+  if (chatContainer.dataset.room == newMessage.chat._id) {
+    addChatMessageHtml(newMessage);
+  }
   refreshMessagesBadge();
 }
 
@@ -844,7 +871,7 @@ const markNotificationsAsOpened = (notificationId = null, callback = null) => {
     notificationId != null
       ? `/api/notifications/${notificationId}/markAsOpened` // marked single as nulled
       : `/api/notifications/markAsOpened`;
-
+  console.log(url, notificationId, callback);
   axios({
     method: 'PUT',
     url: url,
@@ -860,7 +887,9 @@ const refreshMessagesBadge = () => {
   axios({
     method: 'GET',
     url: '/api/chats',
-    unreadOnly: true,
+    params: {
+      unreadOnly: true,
+    },
   }).then(({ data }) => {
     const numResults = data.length;
     if (numResults > 0) {
@@ -876,20 +905,25 @@ const refreshMessagesBadge = () => {
 // Refresh Messages Badge
 const refreshNotificationsBadge = () => {
   const messagesBadge = document.querySelector('#notificationBadge');
-  axios({
-    method: 'GET',
-    url: '/api/notifications',
-    unreadOnly: true,
-  }).then(({ data }) => {
-    const numResults = data.length;
-    if (numResults > 0) {
-      messagesBadge.textContent = numResults;
-      messagesBadge.classList.add('active');
-    } else {
-      messagesBadge.textContent = '';
-      messagesBadge.classList.remove('active');
-    }
-  });
+  if (messagesBadge) {
+    axios({
+      method: 'GET',
+      url: `/api/notifications/`,
+      params: {
+        unreadOnly: true,
+      },
+    }).then(({ data }) => {
+      const numResults = data.length;
+      console.log(numResults);
+      if (numResults > 0) {
+        messagesBadge.textContent = numResults;
+        messagesBadge.classList.add('active');
+      } else {
+        messagesBadge.textContent = '';
+        messagesBadge.classList.remove('active');
+      }
+    });
+  }
 };
 
 //TOPIC STUCK HERE
@@ -898,11 +932,10 @@ const refreshNotificationsBadge = () => {
 const showNotificationPopup = (data) => {
   const html = createNotificationHtml(data);
 
-  console.log(html);
-  // var element = $(html);
-  // element.hide().prependTo('#notificationList').slideDown('fast');
   document.querySelector('#notificationList').insertAdjacentHTML('afterbegin', html);
-  // setTimeout(() => element.fadeOut(400), 5000);
+  setTimeout(() => {
+    document.querySelector('#notificationList').innerHTML = '';
+  }, 5000);
 };
 
 function showMessagePopup(data) {
@@ -912,4 +945,7 @@ function showMessagePopup(data) {
 
   const html = createChatHtml(data.chat);
   document.querySelector('#notificationList').insertAdjacentHTML('afterbegin', html);
+  setTimeout(() => {
+    document.querySelector('#notificationList').innerHTML = '';
+  }, 20000);
 }

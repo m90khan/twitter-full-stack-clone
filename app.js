@@ -25,8 +25,12 @@ app.use(
     secret: process.env.SESSION_TOKEN,
     resave: true,
     saveUninitialized: false,
+    cookie: { secure: process.env.NODE_ENV === 'development' ? false : true },
   })
 );
+if (process.env.NODE_ENV !== 'development') {
+  app.set('trust proxy', 1);
+}
 // Routes
 app.use('/login', require('./routes/loginRouter'));
 app.use('/register', require('./routes/registerRouter'));
@@ -41,7 +45,7 @@ app.use(
   middleware.requireLogin,
   require('./routes/notificationRouter')
 );
-app.use('/bookmarks', middleware.requireLogin, require('./routes/bookmarkRouter'));
+app.use('/bookmarks', require('./routes/bookmarkRouter'));
 //API
 app.use('/api/posts', require('./routes/api/posts'));
 app.use('/api/users', require('./routes/api/users'));
@@ -60,5 +64,3 @@ app.get('/', middleware.requireLogin, (req, res, next) => {
 });
 
 module.exports = app;
-
-// "TT Firs Neue", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif

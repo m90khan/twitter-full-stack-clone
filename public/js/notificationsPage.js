@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Marked all notification as read
   if (markNotificationsAsRead) {
     markNotificationsAsRead.addEventListener('click', (event) => {
+      event.preventDefault();
       markNotificationsAsOpened();
     });
   }

@@ -8,11 +8,11 @@ notificationRouter.get('/', async (req, res, next) => {
     userTo: req.session.user._id,
     notificationType: { $ne: 'newMessage' },
   };
+
   // if query ? only search unopened
   if (req.query.unreadOnly !== undefined && req.query.unreadOnly == 'true') {
     searchObj.opened = false;
   }
-
   Notification.find(searchObj)
     .populate('userTo')
     .populate('userFrom')
@@ -25,7 +25,6 @@ notificationRouter.get('/', async (req, res, next) => {
 });
 // get lastest notification
 notificationRouter.get('/latest', async (req, res, next) => {
-  console.log('hwllo');
   Notification.findOne({ userTo: req.session.user._id })
     .populate('userTo')
     .populate('userFrom')

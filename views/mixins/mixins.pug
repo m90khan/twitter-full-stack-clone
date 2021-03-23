@@ -197,3 +197,21 @@ mixin createChatNameModal(chat)
                 .modal-footer
                     //- button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
                     button#chatNameButton.tweet-btn(type='button') Save
+
+mixin createTweetModal(userLoggedIn)
+    #tweetModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='tweetModalLabel', aria-hidden='true')
+        .modal-dialog(role='document')
+            .modal-content
+                .modal-header
+                    h5#tweetModalLabel.modal-title Tweet
+                    button.btn-close.btn-close--modal(  data-bs-dismiss='modal', aria-label='Close')
+                    span(aria-hidden='true'): i(data-feather='x')
+                .modal-body
+                    .postFormContainer
+                        .userImageContainer
+                            img(src=userLoggedIn.profilePic, alt="User's profile picture")
+                        .textareaContainer
+                            textarea#tweetTextarea(placeholder="What's happening?"  )
+                .modal-footer
+                    //- button.btn.btn-secondary(type='button', data-bs-dismiss='modal') Close
+                    button#submitTweetButton.tweet-btn(  disabled="") Reply

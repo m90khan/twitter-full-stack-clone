@@ -25,6 +25,7 @@ html(lang="en")
             const userLoggedIn = !{userLoggedInJs};
         .wrapper
             .row
+                +createTweetModal(userLoggedIn)
                 .d-none.d-lg-block.d-md-none.col-lg-1
                 nav.col-2.col-lg-2.col-md-3.col-sm-2 
                     a.blue(href="/")
@@ -59,7 +60,7 @@ html(lang="en")
                     a(href="/logout")
                         i(data-feather='log-out')
                         h1 Logout
-                    a.tweet-btn.tweet-btn--large(href="")
+                    a.tweet-btn.tweet-btn--large( data-bs-toggle='modal' data-bs-target='#tweetModal')
                         i.send-icon(data-feather='send')
                         h1 Tweet
                     a.resultListItem.account.tweet-btn--large(href="")
@@ -73,12 +74,11 @@ html(lang="en")
                     .titleContainer
                         h1 #{pageTitle}
                         block headerButton
-
                     block content
 
                 .d-none.d-lg-none.d-md-none.d-sm-none.d-xs-none.col-md-1.col-lg-2
         #notificationList
-
+        script(src='https://twemoji.maxcdn.com/v/latest/twemoji.min.js' crossorigin='anonymous')
         script(src='https://kit.fontawesome.com/85404227e2.js' crossorigin='anonymous')
         script(src='https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js')
         script(src='https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.min.js')

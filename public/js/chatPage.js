@@ -63,7 +63,6 @@ if (chatNameButton) {
         url: '/api/chats/' + chatId,
         data: { chatName: name }, //chatName from schema
       });
-      console.log(data);
       location.reload();
     } catch (error) {
       console.log(error);
@@ -159,7 +158,6 @@ function addChatMessageHtml(message) {
     alert('Message is not valid');
     return;
   }
-
   const messageDiv = createMessageHtml(message, null, '');
 
   addMessagesHtmlToPage(messageDiv);
@@ -239,7 +237,6 @@ function createMessageHtml(message, nextMessage, lastSenderId) {
 function scrollToBottom(animated) {
   const container = document.querySelector('.chatMessages');
   // const scrollHeight = container[0].scrollHeight;
-  console.log(container);
   container.scrollTop = container.scrollHeight;
 }
 

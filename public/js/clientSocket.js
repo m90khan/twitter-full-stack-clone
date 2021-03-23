@@ -6,21 +6,15 @@ socket.on('connected', () => {
   connected = true;
 });
 
-socket.on('notification received', async () => {
-  console.log('recived');
-  try {
-    const { data } = await axios({
-      method: 'GET',
-      url: '/api/notifications/latest',
-    });
-
-    console.log('Worked');
-    console.log(data);
+socket.on('notification received', () => {
+  axios({
+    method: 'GET',
+    url: '/api/notifications/latest',
+  }).then(({ data }) => {
+    console.log('recieved', data);
     refreshNotificationsBadge();
     showNotificationPopup(data);
-  } catch (error) {
-    console.log(error);
-  }
+  });
 });
 
 function emitNotification(userId) {

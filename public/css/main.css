@@ -1063,17 +1063,18 @@ button span {
 
 #notificationList {
   position: fixed;
-  top: 5px;
-  right: 5px;
-  width: 350px;
-  background-color: white;
+  top: 1rem;
+  right: 1rem;
+  width: 30rem;
+  background-color: var(--greyText);
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
   -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
   -moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
 }
 
 #notificationList .active {
-  background-color: white;
+  background-color: var(--greyText);
+  border: 1px solid var(--black);
 }
 
 form {
@@ -1119,4 +1120,12 @@ input[type='submit'] {
 input[type='submit']:hover {
   background-color: #047ecf;
   color: #fff;
+}
+
+.bookmark {
+  height: 60vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 }

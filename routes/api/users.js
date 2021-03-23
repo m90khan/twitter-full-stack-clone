@@ -12,7 +12,7 @@ const upload = multer({ dest: 'uploads/' });
 const { Cloudinary } = require('../../utils/cloudinary');
 
 userRouter.get('/', async (req, res, next) => {
-  const searchObj = req.query;
+  let searchObj = req.query;
 
   if (req.query.search !== undefined) {
     searchObj = {
