@@ -45,6 +45,10 @@ block content
                 span.displayName #{profileUser.firstName} #{profileUser.lastName}
                 span.pb-2.greyText.username @#{profileUser.username}
                 span.description #{profileUser.description}
+                .postButtonContainer.red
+                    button(class='')
+                        i.fas.fa-map-marker-alt
+                        span   #{profileUser.location}
 
                 .followersContainer
                     a(href=`/profile/${profileUser.username}/following`)
